@@ -9,13 +9,13 @@ MainView {
 	objectName: "mainView"
 	applicationName: "scriptor.newparadigmsoftware"
 
-	id: mainView
-	width: windowSettings.width
-	height: windowSettings.height
-//	theme.name: "Suru"
-
 	property var systemList: [{selected:false, name:"", command:"",
 			icon:""}];
+	property var lastFocus: -1;
+
+	width: windowSettings.width
+	height: windowSettings.height
+
 	Settings {
 		id: windowSettings
 		category: "Window"
@@ -38,100 +38,138 @@ MainView {
 
 		header: PageHeader {
 			id: pageHeader
+			visible: !UbuntuApplication.inputMethod.visible
+			Icon {
+				id: headerIcon
+				source: "Scriptor.png"
+				anchors.horizontalCenter: parent.horizontalCenter
+				height: parent.height
+			}
+			Text {
+				anchors {
+					left: headerIcon.right
+					verticalCenter: parent.verticalCenter
+				}
+				text: i18n.tr("-gooey")
+			}
+
 			title: i18n.tr("Scriptor")
 		}
 
-		ListView {
-			id: systemListView
-			orientation: ListView.Vertical
-			flickableDirection: Flickable.VerticalFlick
-			spacing: units.gu(1)
+		Rectangle {
+			id: pageView
 			anchors {
-				top: chkSelectAll.bottom
+				top: UbuntuApplication.inputMethod.visible ? parent.top : pageHeader.bottom
 				left: parent.left
 				right: parent.right
 				bottom: parent.bottom
-				margins: units.gu(1)
+				bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
 			}
 
-			model: ListModel {
-				id: listModel
-				ListElement {
-					index: 0
+			ListView {
+				id: systemListView
+				orientation: ListView.Vertical
+				flickableDirection: Flickable.VerticalFlick
+				spacing: units.gu(1)
+				anchors {
+					top: chkSelectAll.bottom
+					left: parent.left
+					right: parent.right
+					bottom: parent.bottom
+					margins: units.gu(1)
+				}
+				Connections {
+					target: UbuntuApplication.inputMethod
+					onVisibleChanged: {
+						if (UbuntuApplication.inputMethod.visible) {
+							if (lastFocus > 0 && lastFocus < listModel.count) {
+								systemListView.currentIndex = -1;
+								systemListView.currentIndex = lastFocus;
+							}
+						}
+					}
+				}
+
+				model: ListModel {
+					id: listModel
+					ListElement {
+						index: 0
+					}
+				}
+
+				delegate: Component {
+					id: listDelegate
+					Loader {
+						source: "SystemListItem.qml"
+						anchors.left: parent.left
+						anchors.right: parent.right
+					}
 				}
 			}
 
-			delegate: Component {
-				Loader {
-					source: "SystemListItem.qml"
-					anchors.left: parent.left
-					anchors.right: parent.right
+			ListView {
+				id: toolBarListView
+				orientation: ListView.Horizontal
+				flickableDirection: Flickable.HorizontalFlick
+				spacing: units.gu(1)
+				anchors {
+					top: parent.top
+					left: parent.left
+					right: parent.right
+					margins: units.gu(1)
+				}
+				height: units.gu(8)
+
+				model: ListModel {
+					id: toolModel
+					ListElement { index: 0 }
+					ListElement { index: 1 }
+					ListElement { index: 2 }
+					ListElement { index: 3 }
+					ListElement { index: 4 }
+					ListElement { index: 5 }
+				}
+
+				delegate: Component {
+					Button {
+						height: units.gu(8)
+						width: units.gu(8)
+						onClicked: page1.toolFunctions[index]()
+						iconName: page1.toolIconNames[index]
+					}
 				}
 			}
-		}
 
-		ListView {
-			id: toolBarListView
-			orientation: ListView.Horizontal
-			flickableDirection: Flickable.HorizontalFlick
-			spacing: units.gu(1)
-			anchors {
-				top: pageHeader.bottom
-				left: parent.left
-				right: parent.right
-				margins: units.gu(1)
-			}
-			height: units.gu(8)
+			CheckBox {
+				id: chkSelectAll
+				anchors {
+					top: toolBarListView.bottom
+					left: parent.left
+					margins: units.gu(1)
+				}
+				height: units.gu(8)
+				width: units.gu(8)
 
-			model: ListModel {
-				id: toolModel
-				ListElement { index: 0 }
-				ListElement { index: 1 }
-				ListElement { index: 2 }
-				ListElement { index: 3 }
-				ListElement { index: 4 }
-				ListElement { index: 5 }
-			}
-
-			delegate: Component {
-				Button {
-					height: units.gu(8)
-					width: units.gu(8)
-					onClicked: page1.toolFunctions[index]()
-					iconName: page1.toolIconNames[index]
+				onCheckedChanged: {
+					var bSel = chkSelectAll.checked;
+					var i = systemList.length;
+					while (i--) {
+						systemList[i].selected = bSel;
+					}
+					page1.refreshModel();
 				}
 			}
-		}
-
-		CheckBox {
-			id: chkSelectAll
-			anchors {
-				top: toolBarListView.bottom
-				left: parent.left
-				margins: units.gu(1)
-			}
-			height: units.gu(8)
-			width: units.gu(8)
-
-			onCheckedChanged: {
-				var bSel = chkSelectAll.checked;
-				var i = systemList.length;
-				while (i--) {
-					systemList[i].selected = bSel;
+			Text {
+				text: i18n.tr("Select All")
+				anchors {
+					top: chkSelectAll.top
+					bottom: chkSelectAll.bottom
+					left: chkSelectAll.right
+					margins: units.gu(1)
 				}
-				page1.refreshModel();
+				verticalAlignment: Text.AlignVCenter
+				font.pixelSize: height * 2 / 3
 			}
-		}
-		Text {
-			text: i18n.tr("Select All")
-			anchors {
-				top: chkSelectAll.top
-				bottom: chkSelectAll.bottom
-				left: chkSelectAll.right
-				margins: units.gu(1)
-			}
-			verticalAlignment: Text.AlignVCenter
-			font.pixelSize: height * 2 / 3
 		}
 
 		Component.onCompleted: {
@@ -220,6 +258,7 @@ MainView {
 				systemList.pop();
 				listModel.remove(listModel.count - 1, 1);
 			}
+			chkSelectAll.checked = false;
 		}
 
 		function loadList() {
