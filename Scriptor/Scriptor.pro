@@ -7,7 +7,8 @@ QML_FILES += $$files(*.qml,true) \
              $$files(*.js,true)
 
 CONF_FILES +=  Scriptor.apparmor \
-               Scriptor.png
+               Scriptor.png \
+               Scriptor.apparmor.openstore
 
 AP_TEST_FILES += tests/autopilot/run \
                  $$files(tests/*.py,true)
@@ -15,7 +16,7 @@ AP_TEST_FILES += tests/autopilot/run \
 OTHER_FILES += $${CONF_FILES} \
                $${QML_FILES} \
                $${AP_TEST_FILES} \
-               Scriptor.desktop 
+               Scriptor.desktop
 
 #specify where the qml/js files are installed to
 qml_files.path = /Scriptor

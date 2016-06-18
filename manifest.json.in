@@ -6,12 +6,10 @@
     "hooks": {
         "Scriptor": {
             "apparmor": "Scriptor/Scriptor.apparmor",
-            "desktop":  "Scriptor/Scriptor.desktop"
+            "desktop": "Scriptor/Scriptor.desktop"
         }
     },
-    "version": "0.1",
+    "version": "0.2",
     "maintainer": "Jonathan Pelletier <funmungus@gmail.com>",
-    "framework" : "ubuntu-sdk-15.04.4"
+    "framework": "ubuntu-sdk-15.04.4"
 }
-
-
