@@ -1,0 +1,11 @@
+[Desktop Entry]
+_Name=Scriptor
+Comment=List and run executables
+Exec=qmlscene %U share/qml/Scriptor/Main.qml
+Icon=graphics/Scriptor.png
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
+
+
+

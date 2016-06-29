@@ -1,8 +1,0 @@
-[Desktop Entry]
-_Name=Scriptor
-Exec=qmlscene %U Scriptor/Main.qml
-Icon=Scriptor/Scriptor.png
-Terminal=false
-Type=Application
-X-Ubuntu-Touch=true
-

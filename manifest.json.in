@@ -1,15 +1,15 @@
 {
-    "name": "scriptor.newparadigmsoftware",
-    "description": "description of Scriptor",
+    "name": "@APP_ID@",
+    "description": "Save a list of scripts and executables, and execute with a tap.",
     "architecture": "@CLICK_ARCH@",
-    "title": "Scriptor",
+    "title": "@APP_NAME@",
     "hooks": {
-        "Scriptor": {
-            "apparmor": "Scriptor/Scriptor.apparmor",
-            "desktop": "Scriptor/Scriptor.desktop"
-        }
+	"Scriptor": {
+	    "apparmor": "Scriptor.apparmor",
+	    "desktop": "Scriptor.desktop"
+	}
     },
-    "version": "0.2",
+    "version": "0.4",
     "maintainer": "Jonathan Pelletier <funmungus@gmail.com>",
     "framework": "ubuntu-sdk-15.04.4"
 }

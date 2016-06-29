@@ -1,12 +1,9 @@
 # To be ignored by git
-
 *~
 .swp
 bin
 out
 obj
-doxygen
-nohup.*
 *.bak
 *.log
 *.autosave
@@ -18,9 +15,6 @@ nohup.*
 *.dll
 *.exe
 *.so*
-*Makefile
-*makefile
-*.pro.user
-template
-build*/
+Makefile
+*.user
 __pycache__
