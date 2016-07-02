@@ -89,7 +89,7 @@ MainView {
 
 			Icon {
 				id: headerIcon
-				source: Qt.resolvedUrl("graphics/Scriptor.png")
+				source: Qt.resolvedUrl("qrc:/graphics/Scriptor.png")
 				anchors.horizontalCenter: parent.horizontalCenter
 				height: parent.height
 			}
