@@ -17,4 +17,5 @@ obj
 *.so*
 Makefile
 *.user
+*.pot
 __pycache__
