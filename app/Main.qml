@@ -27,6 +27,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 import Qt.labs.settings 1.0
 import QtQuick.LocalStorage 2.0
 import Scriptor 1.0
@@ -36,20 +37,29 @@ MainView {
 	objectName: "mainView"
 	applicationName: "scriptor.newparadigmsoftware"
 
-	property var systemList: [{selected:false, name:"", command:"",
+	property var procList: [{selected:false, name:"", command:"",
 			icon:""}];
 	property var lastFocus: -1;
 
+	id: mainView
 	width: windowSettings.width
 	height: windowSettings.height
 
+	property alias useDarkTheme: windowSettings.useDarkTheme
+	property alias showStdOut: windowSettings.showStdOut
+	property alias showStdErr: windowSettings.showStdErr
 	Settings {
 		id: windowSettings
 		category: "Window"
 		property int width: units.gu(100)
 		property int height: units.gu(75)
 		property string iconFolder: picturesLocation
+		property bool useDarkTheme: true
+		property bool showStdOut: true
+		property bool showStdErr: true
 	}
+	property string colorZ0: useDarkTheme ? "black" : "white"
+	property string colorZ1: useDarkTheme ? "white" : "black"
 
 	Component.onDestruction: {
 		windowSettings.width = window.width
@@ -57,30 +67,72 @@ MainView {
 //		windowSettings.iconFolder = iconFileDialog.folder
 	}
 
+	/* All page bg */
+	Rectangle {
+		anchors.fill: parent
+		color: colorZ0
+	}
+
 	Page {
 		id: page1
-		property var toolIconNames: ["add", "remove", "reset", "save", "up", "down"]
-		property var toolFunctions: [addSystem, removeSystem,
-			loadList, saveList, moveUp, moveDown]
+		property var toolIconNames: ["add", "remove", "reset", "save", "up", "down", "help"]
+		property var toolFunctions: [addProc, removeProc,
+			loadList, saveList, moveUp, moveDown, openHelp]
 
 		header: PageHeader {
 			id: pageHeader
 			visible: !UbuntuApplication.inputMethod.visible
+			Rectangle {
+				anchors.fill: parent
+				color: colorZ0
+			}
+
 			Icon {
 				id: headerIcon
-				source: "Scriptor.png"
+				source: Qt.resolvedUrl("graphics/Scriptor.png")
 				anchors.horizontalCenter: parent.horizontalCenter
 				height: parent.height
 			}
-			Text {
+			TextEdit {
 				anchors {
 					left: headerIcon.right
 					verticalCenter: parent.verticalCenter
 				}
 				text: i18n.tr("-gooey")
+				readOnly: true
+				selectByMouse: true
+				mouseSelectionMode: TextEdit.SelectCharacters
+				color: colorZ1
 			}
-
-			title: i18n.tr("Scriptor")
+			TextEdit {
+				anchors.left: parent.left
+				anchors.leftMargin: units.gu(3)
+				height: parent.height
+				text: i18n.tr("Scriptor")
+				readOnly: true
+				selectByMouse: true
+				mouseSelectionMode: TextEdit.SelectCharacters
+				color: colorZ1
+				font.pixelSize: height * 2 / 3
+			}
+			Button {
+				id: btnOptions
+				anchors {
+					top: parent.top
+					right: parent.right
+				}
+				height: pageHeader.height
+				width: height
+				onClicked: {
+					var opts = {
+						'contentHeight': height * 2,
+						'contentWidth': width * 5,
+						'text': i18n.tr("Options menu not yet implemented")
+					};
+					PopupUtils.open(Qt.resolvedUrl("Message.qml"), btnOptions, opts);
+				}
+				iconName: "settings"
+			}
 		}
 
 		Rectangle {
@@ -93,8 +145,9 @@ MainView {
 				bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
 			}
 
+			color: colorZ0
 			ListView {
-				id: systemListView
+				id: procListView
 				orientation: ListView.Vertical
 				flickableDirection: Flickable.VerticalFlick
 				spacing: units.gu(1)
@@ -110,8 +163,8 @@ MainView {
 					onVisibleChanged: {
 						if (UbuntuApplication.inputMethod.visible) {
 							if (lastFocus > 0 && lastFocus < listModel.count) {
-								systemListView.currentIndex = -1;
-								systemListView.currentIndex = lastFocus;
+								procListView.currentIndex = -1;
+								procListView.currentIndex = lastFocus;
 							}
 						}
 					}
@@ -127,11 +180,21 @@ MainView {
 				delegate: Component {
 					id: listDelegate
 					Loader {
-						source: "SystemListItem.qml"
+						source: Qt.resolvedUrl("ProcessListItem.qml")
 						anchors.left: parent.left
 						anchors.right: parent.right
 					}
 				}
+			}
+
+			Rectangle {
+				anchors {
+					top: toolBarListView.top
+					left: parent.left
+					right: parent.right
+					bottom: chkSelectAll.bottom
+				}
+				color: colorZ0
 			}
 
 			ListView {
@@ -155,6 +218,7 @@ MainView {
 					ListElement { index: 3 }
 					ListElement { index: 4 }
 					ListElement { index: 5 }
+					ListElement { index: 6 }
 				}
 
 				delegate: Component {
@@ -179,14 +243,14 @@ MainView {
 
 				onCheckedChanged: {
 					var bSel = chkSelectAll.checked;
-					var i = systemList.length;
+					var i = procList.length;
 					while (i--) {
-						systemList[i].selected = bSel;
+						procList[i].selected = bSel;
 					}
 					page1.refreshModel();
 				}
 			}
-			Text {
+			TextEdit {
 				text: i18n.tr("Select All")
 				anchors {
 					top: chkSelectAll.top
@@ -196,6 +260,10 @@ MainView {
 				}
 				verticalAlignment: Text.AlignVCenter
 				font.pixelSize: height * 2 / 3
+				readOnly: true
+				selectByMouse: true
+				mouseSelectionMode: TextEdit.SelectCharacters
+				color: colorZ1
 			}
 		}
 
@@ -218,71 +286,71 @@ MainView {
 				}
 				break;
 			case Qt.Key_Up:
-				systemListView.flick(0, 500)
+				procListView.flick(0, 500)
 				break;
 			case Qt.Key_Down:
-				systemListView.flick(0, -500)
+				procListView.flick(0, -500)
 				break;
 			case Qt.Key_PageUp:
-				systemListView.flick(0, 1024)
+				procListView.flick(0, 1024)
 				break;
 			case Qt.Key_PageDown:
-				systemListView.flick(0, -1024)
+				procListView.flick(0, -1024)
 				break;
 			case Qt.Key_Plus:
 			case Qt.Key_plusminus:
 			case Qt.Key_Equal:
-				addSystem()
+				addProc()
 				break;
 			case Qt.Key_Minus:
-				removeSystem()
+				removeProc()
 				break;
 			}
 		}
 
-		function addSystem() {
-			var i = systemList.length;
+		function addProc() {
+			var i = procList.length;
 			while (i-- > 0) {
-				if (systemList[i].selected) {
-					if (i == systemList.length - 1)
-						pushEmptySystem();
+				if (procList[i].selected) {
+					if (i == procList.length - 1)
+						pushEmptyProc();
 					else
-						insertSystem(i + 1);
+						insertProc(i + 1);
 					return;
 				}
 			}
-			pushEmptySystem();
+			pushEmptyProc();
 		}
 
-		function pushEmptySystem() {
-			pushSystem("", "", "");
+		function pushEmptyProc() {
+			pushProc("", "", "");
 		}
 
-		function pushSystem(strN, strC, strI) {
-			systemList.push({selected:false, name:strN,
+		function pushProc(strN, strC, strI) {
+			procList.push({selected:false, name:strN,
 						command:strC, icon:strI});
 			listModel.append({index:listModel.count});
 		}
 
-		function insertSystem(pt) {
-			systemList.splice(pt, 0, {selected:false, name:"",
+		function insertProc(pt) {
+			procList.splice(pt, 0, {selected:false, name:"",
 					  command:"", icon:""});
 			refreshModel();
 		}
 
-		function removeSystem() {
+		function removeProc() {
 			var isRemoved = false;
 			var i = listModel.count;
 			while (i-- > 0) {
-				if (systemList[i].selected) {
-					systemList.splice(i, 1);
+				if (procList[i].selected) {
+					procList.splice(i, 1);
 					isRemoved = true;
 				}
 			}
 			if (isRemoved) {
 				refreshModel();
 			} else {
-				systemList.pop();
+				procList.pop();
 				listModel.remove(listModel.count - 1, 1);
 			}
 			chkSelectAll.checked = false;
@@ -293,11 +361,11 @@ MainView {
 			var localCount = Storage.scriptCount();
 			var i;
 			var script;
-			systemList.splice(0, systemList.length);
+			procList.splice(0, procList.length);
 			listModel.clear();
 			for (i = 0; i < localCount; i++) {
 				script = Storage.script(i);
-				pushSystem(script.name, script.command, script.icon);
+				pushProc(script.name, script.command, script.icon);
 			}
 		}
 
@@ -307,45 +375,46 @@ MainView {
 			var curItem;
 			Storage.initDb(localCount);
 			for (i = 0; i < localCount; i++) {
-				curItem = systemList[i];
+				curItem = procList[i];
 				Storage.setScript(i, curItem.name, curItem.command, curItem.icon);
 			}
 		}
 
 		function moveUp() {
-			console.log("move up not yet implemented");
+			var opts = {
+				'contentWidth': toolBarListView.height * 3,
+				'contentHeight': toolBarListView.height * 2,
+				'text': i18n.tr("move up not yet implemented")
+			};
+			PopupUtils.open(Qt.resolvedUrl("Message.qml"), toolBarListView, opts);
 			refreshModel();
 		}
 
 		function moveDown() {
-			console.log("move down not yet implemented");
+			var opts = {
+				'contentWidth': toolBarListView.height * 3,
+				'contentHeight': toolBarListView.height * 2,
+				'text': i18n.tr("move down not yet implemented")
+			};
+			PopupUtils.open(Qt.resolvedUrl("Message.qml"), toolBarListView, opts);
 			refreshModel();
 		}
 
 		function refreshModel() {
 			listModel.clear();
 			var i = 0;
-			while (listModel.count < systemList.length) {
+			while (listModel.count < procList.length) {
 				listModel.append({index: i++});
 			}
 		}
-	}
 
-	Item {
-		id: messageDialog
-		// @disable-check M16
-//		title: qsTr("May I have your attention, please?")
-		visible: false
-
-		function show(caption) {
-//			messageDialog.text = caption;
-//			messageDialog.open();
-		}
-
-		function onError(error) {
-//			messageDialog.title = qsTr("Error");
-//			messageDialog.text = error;
-//			messageDialog.open();
+		function openHelp() {
+			var opts = {
+				'contentHeight': mainView.height - units.gu(8),
+				'contentWidth': mainView.width - units.gu(8),
+				'text': i18n.tr("Help menu not yet implemented")
+			}
+			PopupUtils.open(Qt.resolvedUrl("Message.qml"), mainView, opts);
 		}
 	}
 

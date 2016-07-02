@@ -5,7 +5,7 @@ include_directories(
 set(
     Scriptorbackend_SRCS
     modules/Scriptor/backend.cpp
-    modules/Scriptor/system.cpp
+    modules/Scriptor/process.cpp
 )
 
 # Make the unit test files visible on qtcreator

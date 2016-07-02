@@ -25,41 +25,31 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "system.h"
-#include <cstdlib>
+import QtQuick 2.4
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
-System::System(QObject *parent) :
-	QObject(parent), _command("")
-{
-
-}
-
-System::~System()
-{
-}
-
-void System::setCommand(const QString &command)
-{
-	if (command != _command) {
-		_command = command;
-		emit commandChanged(_command);
-	}
-}
-
-void System::execute()
-{
-	if (!_command.isEmpty()) {
-		int ret = system(_command.toStdString().c_str());
-		if (ret) {
-			raise(ret);
+Popover {
+	property alias text: messageText.text
+	Rectangle {
+		id: rectBg
+		color: colorZ1
+		/* This is the root element, cannot anchor */
+		height: contentHeight
+		width: contentWidth
+		ScrollView {
+			anchors.fill: parent
+			TextEdit {
+				id: messageText
+				width: rectBg.width
+				color: colorZ0
+				horizontalAlignment: Text.AlignHCenter
+				font.pointSize: units.gu(3)
+				verticalAlignment: Text.AlignVCenter
+				wrapMode: Text.WordWrap
+				readOnly: true
+				mouseSelectionMode: TextEdit.SelectCharacters
+			}
 		}
 	}
-}
-
-void System::raise(int errorNumber)
-{
-	if (errorNumber < 0)
-		errorNumber *= -1;
-	emit error(QString("System command error %1: %2").
-		arg(errorNumber).arg(strerror(errorNumber)));
 }

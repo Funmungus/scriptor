@@ -25,27 +25,39 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QtQml>
-#include <QtQml/QQmlContext>
-#include "backend.h"
-#include "process.h"
+import Scriptor 1.0
 
-void BackendPlugin::registerTypes(const char *uri)
-{
-	Q_ASSERT(uri == QLatin1String("Scriptor"));
+Process {
+	property string outBuffer: ""
+	property string errBuffer: ""
+	property string combineBuffer: ""
+	onReadyReadStandardOutput: {
+		var loc = readAllStandardOutput();
+		outBuffer += loc;
+		combineBuffer += loc;
+	}
+	onReadyReadStandardError: {
+		var loc = readAllStandardError();
+		errBuffer += loc;
+		combineBuffer += loc;
+	}
+	onStarted: reset()
+	onFinished: {
+		var errNo = this.exitCode();
+		if (errNo !== 0) {
+			raise(errNo);
+		}
+	}
 
-	qmlRegisterType<Process>(uri, 1, 0, "Process");
-}
-
-void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
-{
-	QQmlExtensionPlugin::initializeEngine(engine, uri);
-	QStringList picturePaths = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
-	if (picturePaths.length() > 0)
-		engine->rootContext()->setContextProperty("picturesLocation", picturePaths[0]);
-	else
-		engine->rootContext()->setContextProperty("picturesLocation", QDir::homePath());
-	engine->rootContext()->setContextProperty("ProcessNotRunning", QProcess::NotRunning);
-	engine->rootContext()->setContextProperty("ProcessStarting", QProcess::Starting);
-	engine->rootContext()->setContextProperty("ProcessRunning", QProcess::Running);
+	function reset() {
+		outBuffer = "";
+		errBuffer = "";
+		combineBuffer = "";
+	}
+	function makeDead() {
+		terminate();
+		if (!waitForFinished(3000)) {
+			kill();
+		}
+	}
 }

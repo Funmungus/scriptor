@@ -27,19 +27,31 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 import Scriptor 1.0
 
 Item {
+	property alias procBuffer: procBuffer
 	property alias chkSelected: chkSelected
-	property alias btnSystem: btnSystem
+	property alias btnStart: btnStart
 	property alias btnIcon: btnIcon
 	property alias editName: editName
 	property alias editCmd: editCmd
-	System {
-		id: sysCmd
-	}
+	property bool isExpanded: false
 
-	height: units.gu(15)
+	height: isExpanded ? units.gu(32) : units.gu(15)
+
+	ProcessBuffer {
+		id: procBuffer
+		onError: {
+			var opts = {
+				'text': error,
+				'contentWidth': btnStart.width * 3,
+				'contentHeight': btnStart.height * 2
+			};
+			PopupUtils.open(Qt.resolvedUrl("Message.qml"), btnStart, opts);
+		}
+	}
 
 	CheckBox {
 		id: chkSelected
@@ -52,44 +64,45 @@ Item {
 	}
 
 	Button {
-		id: btnSystem
+		id: btnStart
 		anchors {
 			top: parent.top
 			left: chkSelected.right
 		}
 		height: units.gu(10)
 		width: height
-
 		color: "#00000000"
 		iconName: "media-playback-start"
 		onClicked: {
-			sysCmd.command = editCmd.text;
-			sysCmd.execute();
+			if (procBuffer.state() == ProcessNotRunning) {
+				procBuffer.start(editCmd.text);
+			} else {
+				procBuffer.outBuffer += i18n.tr("Command is running, so it will be terminated\n");
+				procBuffer.makeDead();
+			}
 		}
 	}
 	Button {
 		id: btnIcon
 		anchors {
-			top: btnSystem.bottom
+			top: btnStart.bottom
 			bottom: parent.bottom
-			left: btnSystem.left
-			right: btnSystem.right
+			left: btnStart.left
+			right: btnStart.right
 		}
-
 		text: i18n.tr("Browse...")
 	}
 	TextField {
 		id: editName
 		anchors {
-			left: btnSystem.right
+			left: btnStart.right
 			top: parent.top
-			right: parent.right
+			right: btnView.left
 		}
 		height: parent.height / 2
-
-		text: ""
 		placeholderText: i18n.tr("Name")
 		font.pixelSize: height * 2 / 3
+		mouseSelectionMode: TextEdit.SelectCharacters
 	}
 	TextField {
 		id: editCmd
@@ -99,9 +112,27 @@ Item {
 			left: editName.left
 			bottom: parent.bottom
 		}
-
-		text: ""
-		placeholderText: i18n.tr("Command")
 		font.pixelSize: height * 2 / 3
+		placeholderText: i18n.tr("Command")
+		mouseSelectionMode: TextEdit.SelectCharacters
+	}
+	Button {
+		id: btnView
+		anchors {
+			top: parent.top
+			right: parent.right
+			bottom: parent.bottom
+		}
+		width: units.gu(5)
+		iconName: "note"
+		onClicked: {
+			var fullPop = {
+				'contentWidth': mainView.width,
+				'contentHeight': mainView.height - units.gu(8),
+				'text':"Hello all",
+				'procBuffer': procBuffer
+			};
+			PopupUtils.open(Qt.resolvedUrl("Output.qml"), mainView, fullPop);
+		}
 	}
 }

@@ -25,27 +25,43 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QtQml>
-#include <QtQml/QQmlContext>
-#include "backend.h"
-#include "process.h"
+#ifndef PROCESS_H
+#define PROCESS_H
 
-void BackendPlugin::registerTypes(const char *uri)
+#include <QProcess>
+
+class Process : public QProcess
 {
-	Q_ASSERT(uri == QLatin1String("Scriptor"));
+	Q_OBJECT
+public:
+	explicit Process(QObject *parent = 0);
+	~Process();
 
-	qmlRegisterType<Process>(uri, 1, 0, "Process");
-}
+	Q_INVOKABLE QString readAllStandardOutput();
+	Q_INVOKABLE QString readAllStandardError();
+	Q_INVOKABLE void start(const QString &command)
+	{
+		QProcess::start(command);
+	}
+	Q_INVOKABLE int state() const
+	{
+		return QProcess::state();
+	}
+	Q_INVOKABLE int exitCode() const
+	{
+		return QProcess::exitCode();
+	}
+	Q_INVOKABLE bool waitForFinished(int msecs = 30000)
+	{
+		return QProcess::waitForFinished(msecs);
+	}
 
-void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
-{
-	QQmlExtensionPlugin::initializeEngine(engine, uri);
-	QStringList picturePaths = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
-	if (picturePaths.length() > 0)
-		engine->rootContext()->setContextProperty("picturesLocation", picturePaths[0]);
-	else
-		engine->rootContext()->setContextProperty("picturesLocation", QDir::homePath());
-	engine->rootContext()->setContextProperty("ProcessNotRunning", QProcess::NotRunning);
-	engine->rootContext()->setContextProperty("ProcessStarting", QProcess::Starting);
-	engine->rootContext()->setContextProperty("ProcessRunning", QProcess::Running);
-}
+signals:
+	void error(const QString &error) const;
+public slots:
+	void raise(int errorNumber) const;
+private slots:
+	void onError(QProcess::ProcessError);
+};
+
+#endif // PROCESS_H
