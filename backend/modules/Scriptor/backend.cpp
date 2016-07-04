@@ -30,6 +30,8 @@
 #include "backend.h"
 #include "process.h"
 
+#define STR_HELPER(x) #x
+#define STRINGIFY(x) STR_HELPER(x)
 void BackendPlugin::registerTypes(const char *uri)
 {
 	Q_ASSERT(uri == QLatin1String("Scriptor"));
@@ -48,4 +50,8 @@ void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 	engine->rootContext()->setContextProperty("ProcessNotRunning", QProcess::NotRunning);
 	engine->rootContext()->setContextProperty("ProcessStarting", QProcess::Starting);
 	engine->rootContext()->setContextProperty("ProcessRunning", QProcess::Running);
+	/* Expose architecture to qml */
+#ifdef CLICK_ARCH
+	engine->rootContext()->setContextProperty("CLICK_ARCH", STRINGIFY(CLICK_ARCH));
+#endif
 }
