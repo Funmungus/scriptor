@@ -25,38 +25,66 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Scriptor 1.0
+#include "utils.h"
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <cstdlib>
 
-Process {
-	property string outBuffer: ""
-	property string errBuffer: ""
-	property string combineBuffer: ""
-	onReadyReadStandardOutput: {
-		var loc = readAllStandardOutput();
-		outBuffer += loc;
-		combineBuffer += loc;
+Utils::Utils(QObject *parent):
+	QObject(parent)
+{
+
+}
+
+Utils::~Utils()
+{
+
+}
+
+QString Utils::env(const QString &name)
+{
+	return getenv(name.toStdString().c_str());
+}
+
+QString Utils::dataDir()
+{
+	QString appending = getenv("XDG_DATA_HOME");
+	if (appending.isNull() || appending.isEmpty()) {
+		appending = getenv("HOME");
+		if (appending.isNull() || appending.isEmpty())
+			appending = "/home/phablet/.local/share";
+		else
+			appending += "/.local/share";
 	}
-	onReadyReadStandardError: {
-		var loc = readAllStandardError();
-		errBuffer += loc;
-		combineBuffer += loc;
-	}
-	onFinished: {
-		var errNo = this.exitCode();
-		if (errNo !== 0) {
-			raise(errNo);
+	appending += "/scriptor.newparadigmsoftware";
+}
+
+bool Utils::fileExists(const QString &filePath)
+{
+	return QFileInfo::exists(filePath);
+}
+
+bool Utils::copyFile(const QString &copyFrom, const QString &copyTo)
+{
+	QFileInfo inf(copyFrom);
+	if (inf.exists()) {
+		if (inf.isDir()) {
+			return false;
 		}
+		return QDir().mkpath(copyTo) && QFile::copy(copyFrom, copyTo);
 	}
+	return false;
+}
 
-	function reset() {
-		outBuffer = "";
-		errBuffer = "";
-		combineBuffer = "";
-	}
-	function makeDead() {
-		terminate();
-		if (!waitForFinished(3000)) {
-			kill();
+bool Utils::removeFile(const QString &filePath)
+{
+	QFileInfo inf(filePath);
+	if (inf.exists()) {
+		if (inf.isDir()) {
+			return QDir(filePath).removeRecursively();
+		} else {
+			return QFile(filePath).remove();
 		}
 	}
 }

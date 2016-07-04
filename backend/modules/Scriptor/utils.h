@@ -25,38 +25,23 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Scriptor 1.0
+#ifndef UTILS_H
+#define UTILS_H
 
-Process {
-	property string outBuffer: ""
-	property string errBuffer: ""
-	property string combineBuffer: ""
-	onReadyReadStandardOutput: {
-		var loc = readAllStandardOutput();
-		outBuffer += loc;
-		combineBuffer += loc;
-	}
-	onReadyReadStandardError: {
-		var loc = readAllStandardError();
-		errBuffer += loc;
-		combineBuffer += loc;
-	}
-	onFinished: {
-		var errNo = this.exitCode();
-		if (errNo !== 0) {
-			raise(errNo);
-		}
-	}
+#include <QObject>
 
-	function reset() {
-		outBuffer = "";
-		errBuffer = "";
-		combineBuffer = "";
-	}
-	function makeDead() {
-		terminate();
-		if (!waitForFinished(3000)) {
-			kill();
-		}
-	}
-}
+class Utils : public QObject
+{
+	Q_OBJECT
+public:
+	explicit Utils(QObject *parent = 0);
+	~Utils();
+
+	Q_INVOKABLE static QString env(const QString &name);
+	Q_INVOKABLE static QString dataDir();
+	Q_INVOKABLE static bool fileExists(const QString &filePath);
+	Q_INVOKABLE static bool copyFile(const QString &copyFrom, const QString &copyTo);
+	Q_INVOKABLE static bool removeFile(const QString &filePath);
+};
+
+#endif

@@ -75,6 +75,7 @@ Item {
 		iconName: "media-playback-start"
 		onClicked: {
 			if (procBuffer.state() == ProcessNotRunning) {
+				procBuffer.reset();
 				procBuffer.start(editCmd.text);
 			} else {
 				procBuffer.outBuffer += i18n.tr("Command is running, so it will be terminated\n");
@@ -104,7 +105,7 @@ Item {
 		font.pixelSize: height * 2 / 3
 		mouseSelectionMode: TextEdit.SelectCharacters
 	}
-	TextField {
+	TextArea {
 		id: editCmd
 		anchors {
 			right: editName.right
@@ -112,8 +113,9 @@ Item {
 			left: editName.left
 			bottom: parent.bottom
 		}
-		font.pixelSize: height * 2 / 3
+		font.pixelSize: units.gu(3)
 		placeholderText: i18n.tr("Command")
+		wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 		mouseSelectionMode: TextEdit.SelectCharacters
 	}
 	Button {

@@ -39,7 +39,7 @@ MainView {
 
 	property var procList: [{selected:false, name:"", command:"",
 			icon:""}];
-	property var lastFocus: -1;
+	property int lastFocus: -1;
 
 	id: mainView
 	width: windowSettings.width
@@ -62,8 +62,8 @@ MainView {
 	property string colorZ1: useDarkTheme ? "white" : "black"
 
 	Component.onDestruction: {
-		windowSettings.width = window.width
-		windowSettings.height = window.height
+		windowSettings.width = mainView.width
+		windowSettings.height = mainView.height
 //		windowSettings.iconFolder = iconFileDialog.folder
 	}
 
@@ -92,8 +92,9 @@ MainView {
 				source: Qt.resolvedUrl("qrc:/graphics/Scriptor.png")
 				anchors.horizontalCenter: parent.horizontalCenter
 				height: parent.height
+				width: height
 			}
-			TextEdit {
+			TextField {
 				anchors {
 					left: headerIcon.right
 					verticalCenter: parent.verticalCenter
@@ -104,9 +105,11 @@ MainView {
 				mouseSelectionMode: TextEdit.SelectCharacters
 				color: colorZ1
 			}
-			TextEdit {
-				anchors.left: parent.left
-				anchors.leftMargin: units.gu(3)
+			TextField {
+				anchors {
+					left: parent.left
+					leftMargin: units.gu(3)
+				}
 				height: parent.height
 				text: i18n.tr("Scriptor")
 				readOnly: true
@@ -120,8 +123,8 @@ MainView {
 				anchors {
 					top: parent.top
 					right: parent.right
+					bottom: parent.bottom
 				}
-				height: pageHeader.height
 				width: height
 				onClicked: {
 					var opts = {
@@ -250,12 +253,13 @@ MainView {
 					page1.refreshModel();
 				}
 			}
-			TextEdit {
+			TextField {
 				text: i18n.tr("Select All")
 				anchors {
 					top: chkSelectAll.top
 					bottom: chkSelectAll.bottom
 					left: chkSelectAll.right
+					right: parent.right
 					margins: units.gu(1)
 				}
 				verticalAlignment: Text.AlignVCenter
@@ -268,7 +272,7 @@ MainView {
 		}
 
 		Component.onCompleted: {
-			loadList()
+			loadList();
 		}
 
 		Keys.onPressed: {

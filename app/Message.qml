@@ -37,19 +37,16 @@ Popover {
 		/* This is the root element, cannot anchor */
 		height: contentHeight
 		width: contentWidth
-		ScrollView {
+		TextArea {
+			id: messageText
 			anchors.fill: parent
-			TextEdit {
-				id: messageText
-				width: rectBg.width
-				color: colorZ0
-				horizontalAlignment: Text.AlignHCenter
-				font.pointSize: units.gu(3)
-				verticalAlignment: Text.AlignVCenter
-				wrapMode: Text.WordWrap
-				readOnly: true
-				mouseSelectionMode: TextEdit.SelectCharacters
-			}
+			color: colorZ0
+			horizontalAlignment: Text.AlignHCenter
+			font.pointSize: units.gu(5)
+			verticalAlignment: Text.AlignVCenter
+			wrapMode: Text.WordWrap
+			readOnly: true
+			mouseSelectionMode: TextEdit.SelectCharacters
 		}
 	}
 }
