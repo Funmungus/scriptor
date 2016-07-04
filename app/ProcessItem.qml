@@ -51,6 +51,8 @@ Item {
 			};
 			PopupUtils.open(Qt.resolvedUrl("Message.qml"), btnStart, opts);
 		}
+		/* Should this be the data or cache directory? */
+		Component.onCompleted: procBuffer.setWorkingDirectory(utils.dataDir())
 	}
 
 	CheckBox {
