@@ -41,6 +41,9 @@ void BackendPlugin::registerTypes(const char *uri)
 
 	QString path = getenv("PATH");
 	QString binDir = Utils::dataDir() + "/bin";
+	QDir dirBinDir(binDir);
+	if (!dirBinDir.exists() && !dirBinDir.mkpath("."))
+		qCritical() << "Not able to create directory " << binDir;
 	if (path.isEmpty() || path.isNull())
 		path = binDir;
 	else

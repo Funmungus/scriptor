@@ -58,6 +58,7 @@ QString Utils::dataDir()
 			appending += "/.local/share";
 	}
 	appending += "/scriptor.newparadigmsoftware";
+	return appending;
 }
 
 bool Utils::fileExists(const QString &filePath)
