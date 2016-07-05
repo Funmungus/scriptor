@@ -28,14 +28,10 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
+import "popups.js" as Pops
 
 Dialog {
 	function iconFile(acceptFnc) {
-		var opts = {
-			'contentHeight': units.gu(40),
-			'contentWidth': units.gu(40),
-			'text': i18n.tr("Icon dialog not yet implemented.")
-		};
-		PopupUtils.open(Qt.resolvedUrl("Message.qml"), null, opts);
+		Pops.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
 	}
 }

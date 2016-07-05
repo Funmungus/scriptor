@@ -29,111 +29,126 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
+/* TODO: Page instead of Popover */
 Popover {
 	property alias textArea: txtArea
 	property var procBuffer
 	property int bufferFlags: showStdOut ? showStdErr ? 3 : 1 : showStdErr ? 2 : 0;
+	id: rootPopover
 	Rectangle {
-		id: rectArea
+		id: rectBoundary
 		color: colorZ1
-		/* This is the root element, cannot anchor */
-		height: contentHeight
 		width: contentWidth
-		CheckBox {
-			id: chkOut
-			anchors {
-				top: parent.top
-				left: parent.left
-			}
-			height: units.gu(5)
-			width: units.gu(5)
-			onCheckedChanged: {
-				showStdOut = checked;
-				if (checked)
-					bufferFlags |= 1;
-				else
-					bufferFlags &= 2;
-				txtArea.text = getText();
-			}
-		}
-		Binding {
-			target: chkOut
-			property: "checked"
-			value: showStdOut
-		}
-		TextField {
-			id: txtOut
-			anchors {
-				top: chkOut.top
-				left: chkOut.right
-				right: parent.right
-			}
-			height: chkOut.height
-			text: i18n.tr("Show Standard Output")
+		height: contentHeight
+
+		Rectangle {
+			id: rectArea
 			color: colorZ0
-			font.pixelSize: height * 2 / 3
-			readOnly: true
-			selectByMouse: true
-			mouseSelectionMode: TextEdit.SelectCharacters
-		}
-		CheckBox {
-			id: chkErr
-			anchors {
-				top: chkOut.bottom
-				left: parent.left
+			/* This is the root element, cannot anchor */
+			width: contentWidth - units.gu(2)
+			height: contentHeight - btnBack.height
+			x: units.gu(1)
+			y: units.gu(1)
+			CheckBox {
+				id: chkOut
+				anchors {
+					top: parent.top
+					left: parent.left
+				}
+				height: units.gu(5)
+				width: units.gu(5)
+				onCheckedChanged: {
+					showStdOut = checked;
+					if (checked)
+						bufferFlags |= 1;
+					else
+						bufferFlags &= 2;
+					txtArea.text = getText();
+				}
 			}
-			height: units.gu(5)
-			width: units.gu(5)
-			onCheckedChanged: {
-				showStdErr = checked;
-				if (checked)
-					bufferFlags |= 2;
-				else
-					bufferFlags &= 1;
-				txtArea.text = getText();
+			Binding {
+				target: chkOut
+				property: "checked"
+				value: showStdOut
 			}
-		}
-		Binding {
-			target: chkErr
-			property: "checked"
-			value: showStdErr
-		}
-		TextField {
-			id: txtErr
-			anchors {
-				top: chkErr.top
-				left: chkErr.right
-				right: parent.right
+			LabelForm {
+				id: txtOut
+				anchors {
+					top: chkOut.top
+					left: chkOut.right
+					right: parent.right
+				}
+				height: chkOut.height
+				text: i18n.tr("Show Standard Output")
+				color: colorZ1
+				font.pixelSize: height * 2 / 3
 			}
-			height: chkErr.height
-			text: i18n.tr("Show Standard Error")
-			color: colorZ0
-			font.pixelSize: height * 2 / 3
-			readOnly: true
-			selectByMouse: true
-			mouseSelectionMode: TextEdit.SelectCharacters
+			CheckBox {
+				id: chkErr
+				anchors {
+					top: chkOut.bottom
+					left: parent.left
+				}
+				height: units.gu(5)
+				width: units.gu(5)
+				onCheckedChanged: {
+					showStdErr = checked;
+					if (checked)
+						bufferFlags |= 2;
+					else
+						bufferFlags &= 1;
+					txtArea.text = getText();
+				}
+			}
+			Binding {
+				target: chkErr
+				property: "checked"
+				value: showStdErr
+			}
+			LabelForm {
+				id: txtErr
+				anchors {
+					top: chkErr.top
+					left: chkErr.right
+					right: parent.right
+				}
+				height: chkErr.height
+				text: i18n.tr("Show Standard Error")
+				color: colorZ1
+				font.pixelSize: height * 2 / 3
+			}
+
+			LabelArea {
+				id: txtArea
+				anchors {
+					top: chkErr.bottom
+					left: parent.left
+					bottom: parent.bottom
+					right: parent.right
+				}
+				color: colorZ1
+				font.pointSize: units.gu(3)
+				wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+				text: getText()
+			}
+
+			Connections {
+				target: procBuffer
+				onOutBufferChanged: txtArea.text = getText()
+				onErrBufferChanged: txtArea.text = getText()
+			}
 		}
 
-		TextArea {
-			id: txtArea
+		Button {
+			id: btnBack
 			anchors {
-				top: chkErr.bottom
-				left: parent.left
 				bottom: parent.bottom
+				left: parent.left
 				right: parent.right
 			}
-			color: colorZ0
-			font.pointSize: units.gu(3)
-			wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-			text: getText()
-			readOnly: true
-			mouseSelectionMode: TextEdit.SelectCharacters
-		}
-
-		Connections {
-			target: procBuffer
-			onOutBufferChanged: txtArea.text = getText()
-			onErrBufferChanged: txtArea.text = getText()
+			height: units.gu(8)
+			text: i18n.tr("Close");
+			onClicked: PopupUtils.close(rootPopover);
 		}
 	}
 

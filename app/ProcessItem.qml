@@ -29,6 +29,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 import Scriptor 1.0
+import "popups.js" as Pops
 
 Item {
 	property alias procBuffer: procBuffer
@@ -44,12 +45,7 @@ Item {
 	ProcessBuffer {
 		id: procBuffer
 		onError: {
-			var opts = {
-				'text': error,
-				'contentWidth': btnStart.width * 3,
-				'contentHeight': btnStart.height * 2
-			};
-			PopupUtils.open(Qt.resolvedUrl("Message.qml"), btnStart, opts);
+			Pops.showMessage(btnStart, error);
 		}
 		/* Should this be the data or cache directory? */
 		Component.onCompleted: procBuffer.setWorkingDirectory(utils.dataDir())
@@ -132,7 +128,7 @@ Item {
 		onClicked: {
 			var fullPop = {
 				'contentWidth': mainView.width,
-				'contentHeight': mainView.height - units.gu(8),
+				'contentHeight': mainView.height,
 				'text':"Hello all",
 				'procBuffer': procBuffer
 			};
