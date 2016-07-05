@@ -68,12 +68,12 @@ bool Utils::fileExists(const QString &filePath)
 
 bool Utils::copyFile(const QString &copyFrom, const QString &copyTo)
 {
-	QFileInfo inf(copyFrom);
-	if (inf.exists()) {
-		if (inf.isDir()) {
-			return false;
-		}
-		return QDir().mkpath(copyTo) && QFile::copy(copyFrom, copyTo);
+	QFile from(copyFrom);
+	QFile to(copyTo);
+	if (from.exists()) {
+		if (to.exists())
+			to.remove();
+		return from.copy(copyTo);
 	}
 	return false;
 }

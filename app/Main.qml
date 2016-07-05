@@ -37,6 +37,7 @@ MainView {
 	objectName: "mainView"
 	applicationName: "scriptor.newparadigmsoftware"
 
+	readonly property string binBusybox: utils.dataDir() + "/bin/busybox";
 	property var procList: [{selected:false, name:"", command:"",
 			icon:""}];
 	property int lastFocus: -1;
@@ -65,6 +66,17 @@ MainView {
 		windowSettings.width = mainView.width
 		windowSettings.height = mainView.height
 //		windowSettings.iconFolder = iconFileDialog.folder
+	}
+
+	Component {
+		id: downloader
+		DownloadDialog {
+		}
+	}
+
+	Component.onCompleted: {
+		if (!utils.fileExists(binBusybox))
+			PopupUtils.open(downloader);
 	}
 
 	/* All page bg */
@@ -327,7 +339,10 @@ MainView {
 		}
 
 		function pushEmptyProc() {
-			pushProc("", "", "");
+			if (utils.fileExists(binBusybox))
+				pushProc("", "busybox -c sh \"\"", "");
+			else
+				pushProc("", "bash -c \"\"", "");
 		}
 
 		function pushProc(strN, strC, strI) {
@@ -353,7 +368,7 @@ MainView {
 			}
 			if (isRemoved) {
 				refreshModel();
-			} else {
+			} else if (procList.length > 0){
 				procList.pop();
 				listModel.remove(listModel.count - 1, 1);
 			}

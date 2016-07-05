@@ -29,6 +29,7 @@
 #define UTILS_H
 
 #include <QObject>
+#include <QFile>
 
 class Utils : public QObject
 {
@@ -42,6 +43,21 @@ public:
 	Q_INVOKABLE static bool fileExists(const QString &filePath);
 	Q_INVOKABLE static bool copyFile(const QString &copyFrom, const QString &copyTo);
 	Q_INVOKABLE static bool removeFile(const QString &filePath);
+
+	Q_INVOKABLE static int permissions(const QString &filename)
+	{
+		return QFile::permissions(filename);
+	}
+	Q_INVOKABLE static bool setPermissions(const QString &filename, int permissionSpec)
+	{
+		return QFile::setPermissions(filename, (QFile::Permissions)permissionSpec);
+	}
+	Q_INVOKABLE static int binPermissions()
+	{
+		return QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
+				QFile::ReadGroup | QFile::ExeGroup |
+				QFile::ReadOther | QFile::ExeOther;
+	}
 };
 
 #endif
