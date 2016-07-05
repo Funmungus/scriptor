@@ -38,6 +38,7 @@ MainView {
 	applicationName: "scriptor.newparadigmsoftware"
 
 	readonly property string binBusybox: utils.dataDir() + "/bin/busybox";
+	readonly property int applicationVersion: 1
 	property var procList: [{selected:false, name:"", command:"",
 			icon:""}];
 	property int lastFocus: -1;
@@ -58,6 +59,7 @@ MainView {
 		property bool useDarkTheme: true
 		property bool showStdOut: true
 		property bool showStdErr: true
+		property int lastRunVersion: 0
 	}
 	property string colorZ0: useDarkTheme ? "black" : "white"
 	property string colorZ1: useDarkTheme ? "white" : "black"
@@ -69,15 +71,33 @@ MainView {
 	}
 
 	Component {
-		id: downloader
+		id: downloaderComponent
 		DownloadDialog {
+			id: downloader
+		}
+	}
+	Component {
+		id: autoDlComponent
+		Dialog {
+			id: autoDl
+			title: i18n.tr("Download Busybox?");
+			text: i18n.tr("Busybox is not found at ") +
+				  binBusybox + "\n" + i18n.tr("If you installed this app from the Ubuntu store, then all other commands will be blocked by AppArmor.\n") +
+				  i18n.tr("Would you like to download it now?");
+			Button {
+				text: i18n.tr("Yes, please")
+				onClicked: {
+					PopupUtils.open(downloaderComponent, null, {'autoStart': true});
+				}
+			}
+			Button {
+				text: i18n.tr("No thank you")
+				onClicked: PopupUtils.close(autoDl);
+			}
 		}
 	}
 
-	Component.onCompleted: {
-		if (!utils.fileExists(binBusybox))
-			PopupUtils.open(downloader);
-	}
+	Component.onCompleted: firstCheckInitialize();
 
 	/* All page bg */
 	Rectangle {
@@ -433,7 +453,7 @@ MainView {
 				'contentWidth': mainView.width - units.gu(8),
 				'text': i18n.tr("Help menu not yet implemented")
 			}
-			PopupUtils.open(Qt.resolvedUrl("Message.qml"), mainView, opts);
+			PopupUtils.open(Qt.resolvedUrl("Message.qml"), page1, opts);
 		}
 	}
 
@@ -444,5 +464,22 @@ MainView {
 //		folder: windowSettings.iconFolder
 		// @disable-check M16
 //		onFolderChanged: windowSettings.iconFolder = folder
+	}
+
+	function firstCheckInitialize() {
+		if (windowSettings.lastRunVersion < applicationVersion) {
+			if (!utils.fileExists(binBusybox))
+				PopupUtils.open(autoDlComponent);
+			firstRunHelper();
+			windowSettings.lastRunVersion = applicationVersion;
+		}
+	}
+	function firstRunHelper() {
+		var opts = {
+			'contentHeight': units.gu(40),
+			'contentWidth': units.gu(50),
+			'text': i18n.tr("First run not yet implemented")
+		}
+		PopupUtils.open(Qt.resolvedUrl("Message.qml"), page1, opts);
 	}
 }
