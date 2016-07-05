@@ -28,6 +28,9 @@
 #include "process.h"
 #include <cstdlib>
 
+#define STR_HELPER(x) #x
+#define STRINGIFY(x) STR_HELPER(x)
+
 Process::Process(QObject *parent) :
 	QProcess(parent)
 {

@@ -43,6 +43,14 @@ public:
 	{
 		QProcess::start(command);
 	}
+	Q_INVOKABLE QString workingDirectory() const
+	{
+		return QProcess::workingDirectory();
+	}
+	Q_INVOKABLE void setWorkingDirectory(const QString &dir)
+	{
+		QProcess::setWorkingDirectory(dir);
+	}
 	Q_INVOKABLE int state() const
 	{
 		return QProcess::state();

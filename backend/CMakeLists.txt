@@ -6,6 +6,7 @@ set(
     Scriptorbackend_SRCS
     modules/Scriptor/backend.cpp
     modules/Scriptor/process.cpp
+    modules/Scriptor/utils.cpp
 )
 
 # Make the unit test files visible on qtcreator

@@ -32,6 +32,7 @@ import Ubuntu.Components.Popups 1.3
 Popover {
 	property alias textArea: txtArea
 	property var procBuffer
+	property int bufferFlags: showStdOut ? showStdErr ? 3 : 1 : showStdErr ? 2 : 0;
 	Rectangle {
 		id: rectArea
 		color: colorZ1
@@ -46,18 +47,26 @@ Popover {
 			}
 			height: units.gu(5)
 			width: units.gu(5)
-			onCheckedChanged: showStdOut = checked
+			onCheckedChanged: {
+				showStdOut = checked;
+				if (checked)
+					bufferFlags |= 1;
+				else
+					bufferFlags &= 2;
+				txtArea.text = getText();
+			}
 		}
 		Binding {
 			target: chkOut
 			property: "checked"
 			value: showStdOut
 		}
-		TextEdit {
+		TextField {
 			id: txtOut
 			anchors {
 				top: chkOut.top
 				left: chkOut.right
+				right: parent.right
 			}
 			height: chkOut.height
 			text: i18n.tr("Show Standard Output")
@@ -75,18 +84,26 @@ Popover {
 			}
 			height: units.gu(5)
 			width: units.gu(5)
-			onCheckedChanged: showStdErr = checked
+			onCheckedChanged: {
+				showStdErr = checked;
+				if (checked)
+					bufferFlags |= 2;
+				else
+					bufferFlags &= 1;
+				txtArea.text = getText();
+			}
 		}
 		Binding {
 			target: chkErr
 			property: "checked"
 			value: showStdErr
 		}
-		TextEdit {
+		TextField {
 			id: txtErr
 			anchors {
 				top: chkErr.top
 				left: chkErr.right
+				right: parent.right
 			}
 			height: chkErr.height
 			text: i18n.tr("Show Standard Error")
@@ -97,29 +114,38 @@ Popover {
 			mouseSelectionMode: TextEdit.SelectCharacters
 		}
 
-		ScrollView {
-			id: scrollView
+		TextArea {
+			id: txtArea
 			anchors {
 				top: chkErr.bottom
 				left: parent.left
 				bottom: parent.bottom
 				right: parent.right
 			}
-
-			TextEdit {
-				id: txtArea
-				anchors.top: parent.top
-				width: rectArea.width
-				color: colorZ0
-				font.pointSize: units.gu(3)
-				wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-				text: showStdOut ? showStdErr ? procBuffer.combineBuffer : procBuffer.outBuffer : showStdErr ? procBuffer.errBuffer : ""
-				mouseSelectionMode: TextEdit.SelectCharacters
-			}
-			Component.onCompleted: {
-				scrollView.flickableItem.contentY = scrollView.flickableItem.contentHeight;
-				scrollView.flickableItem.flick(0, -1);
-			}
+			color: colorZ0
+			font.pointSize: units.gu(3)
+			wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+			text: getText()
+			readOnly: true
+			mouseSelectionMode: TextEdit.SelectCharacters
 		}
+
+		Connections {
+			target: procBuffer
+			onOutBufferChanged: txtArea.text = getText()
+			onErrBufferChanged: txtArea.text = getText()
+		}
+	}
+
+	function getText() {
+		switch (bufferFlags) {
+		case 1:
+			return procBuffer.outBuffer;
+		case 2:
+			return procBuffer.errBuffer;
+		case 3:
+			return procBuffer.combineBuffer;
+		}
+		return "";
 	}
 }

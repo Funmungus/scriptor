@@ -27,14 +27,33 @@
 
 #include <QtQml>
 #include <QtQml/QQmlContext>
+#include <QtCore>
+#include <cstdlib>
 #include "backend.h"
 #include "process.h"
+#include "utils.h"
 
+#define STR_HELPER(x) #x
+#define STRINGIFY(x) STR_HELPER(x)
 void BackendPlugin::registerTypes(const char *uri)
 {
 	Q_ASSERT(uri == QLatin1String("Scriptor"));
 
+	QString path = getenv("PATH");
+	QString binDir = Utils::dataDir() + "/bin";
+	QDir dirBinDir(binDir);
+	if (!dirBinDir.exists() && !dirBinDir.mkpath("."))
+		qCritical() << "Not able to create directory " << binDir;
+	if (path.isEmpty() || path.isNull())
+		path = binDir;
+	else
+		path.prepend(binDir + ":");
+	if (setenv("PATH", path.toStdString().c_str(), 1) < 0) {
+		qCritical() << "Unable to set PATH to find busybox\n";
+	}
+
 	qmlRegisterType<Process>(uri, 1, 0, "Process");
+	qmlRegisterType<Utils>(uri, 1, 0, "Utils");
 }
 
 void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -48,4 +67,9 @@ void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 	engine->rootContext()->setContextProperty("ProcessNotRunning", QProcess::NotRunning);
 	engine->rootContext()->setContextProperty("ProcessStarting", QProcess::Starting);
 	engine->rootContext()->setContextProperty("ProcessRunning", QProcess::Running);
+	/* Expose architecture to qml */
+#ifdef CLICK_ARCH
+	engine->rootContext()->setContextProperty("CLICK_ARCH", STRINGIFY(CLICK_ARCH));
+#endif
+	engine->rootContext()->setContextProperty("utils", &_utils);
 }
