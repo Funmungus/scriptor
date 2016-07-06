@@ -54,7 +54,9 @@ Popover {
 			horizontalAlignment: Text.AlignHCenter
 			verticalAlignment: Text.AlignVCenter
 			color: colorZ1
-			font.pointSize: units.gu(5)
+			x: -units.gu(1)
+			y: -units.gu(1)
+			font.pixelSize: units.gu(3)
 		}
 	}
 }

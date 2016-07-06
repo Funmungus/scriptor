@@ -127,7 +127,7 @@ Popover {
 					right: parent.right
 				}
 				color: colorZ1
-				font.pointSize: units.gu(3)
+				font.pixelSize: units.gu(3)
 				wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 				text: getText()
 			}
