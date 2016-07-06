@@ -25,38 +25,8 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+/* Depends on import Ubuntu.Components.Popups 1.3 */
 
-Popover {
-	property alias text: messageText.text
-	contentWidth: messageText.width
-	contentHeight: messageText.height
-
-	/* frame */
-	Rectangle {
-		color: colorZ1
-		height: contentHeight
-		width: contentWidth
-	}
-
-	/* bg */
-	Rectangle {
-		color: colorZ0
-		height: contentHeight - units.gu(2)
-		width: contentWidth - units.gu(2)
-		x: units.gu(1)
-		y: units.gu(1)
-
-		LabelArea {
-			id: messageText
-			horizontalAlignment: Text.AlignHCenter
-			verticalAlignment: Text.AlignVCenter
-			color: colorZ1
-			x: -units.gu(1)
-			y: -units.gu(1)
-			font.pixelSize: units.gu(3)
-		}
-	}
+function showMessage(caller, text) {
+	return PopupUtils.open(Qt.resolvedUrl("Message.qml"), caller, {'text': text});
 }

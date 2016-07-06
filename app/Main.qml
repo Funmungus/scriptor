@@ -32,6 +32,7 @@ import Qt.labs.settings 1.0
 import QtQuick.LocalStorage 2.0
 import Scriptor 1.0
 import "storage.js" as Storage
+import "popups.js" as Pops
 
 MainView {
 	objectName: "mainView"
@@ -88,6 +89,7 @@ MainView {
 				text: i18n.tr("Yes, please")
 				onClicked: {
 					PopupUtils.open(downloaderComponent, null, {'autoStart': true});
+					PopupUtils.close(autoDl);
 				}
 			}
 			Button {
@@ -126,27 +128,21 @@ MainView {
 				height: parent.height
 				width: height
 			}
-			TextField {
+			LabelForm {
 				anchors {
 					left: headerIcon.right
 					verticalCenter: parent.verticalCenter
 				}
 				text: i18n.tr("-gooey")
-				readOnly: true
-				selectByMouse: true
-				mouseSelectionMode: TextEdit.SelectCharacters
 				color: colorZ1
 			}
-			TextField {
+			LabelForm {
 				anchors {
 					left: parent.left
 					leftMargin: units.gu(3)
 				}
 				height: parent.height
 				text: i18n.tr("Scriptor")
-				readOnly: true
-				selectByMouse: true
-				mouseSelectionMode: TextEdit.SelectCharacters
 				color: colorZ1
 				font.pixelSize: height * 2 / 3
 			}
@@ -159,12 +155,7 @@ MainView {
 				}
 				width: height
 				onClicked: {
-					var opts = {
-						'contentHeight': height * 2,
-						'contentWidth': width * 5,
-						'text': i18n.tr("Options menu not yet implemented")
-					};
-					PopupUtils.open(Qt.resolvedUrl("Message.qml"), btnOptions, opts);
+					Pops.showMessage(btnOptions, i18n.tr("Options menu not yet implemented"));
 				}
 				iconName: "settings"
 			}
@@ -285,7 +276,7 @@ MainView {
 					page1.refreshModel();
 				}
 			}
-			TextField {
+			LabelForm {
 				text: i18n.tr("Select All")
 				anchors {
 					top: chkSelectAll.top
@@ -296,9 +287,6 @@ MainView {
 				}
 				verticalAlignment: Text.AlignVCenter
 				font.pixelSize: height * 2 / 3
-				readOnly: true
-				selectByMouse: true
-				mouseSelectionMode: TextEdit.SelectCharacters
 				color: colorZ1
 			}
 		}
@@ -360,7 +348,7 @@ MainView {
 
 		function pushEmptyProc() {
 			if (utils.fileExists(binBusybox))
-				pushProc("", "busybox -c sh \"\"", "");
+				pushProc("", "busybox sh -c \"\"", "");
 			else
 				pushProc("", "bash -c \"\"", "");
 		}
@@ -420,22 +408,12 @@ MainView {
 		}
 
 		function moveUp() {
-			var opts = {
-				'contentWidth': toolBarListView.height * 3,
-				'contentHeight': toolBarListView.height * 2,
-				'text': i18n.tr("move up not yet implemented")
-			};
-			PopupUtils.open(Qt.resolvedUrl("Message.qml"), toolBarListView, opts);
+			Pops.showMessage(toolBarListView, i18n.tr("move up not yet implemented"));
 			refreshModel();
 		}
 
 		function moveDown() {
-			var opts = {
-				'contentWidth': toolBarListView.height * 3,
-				'contentHeight': toolBarListView.height * 2,
-				'text': i18n.tr("move down not yet implemented")
-			};
-			PopupUtils.open(Qt.resolvedUrl("Message.qml"), toolBarListView, opts);
+			Pops.showMessage(toolBarListView, i18n.tr("move down not yet implemented"));
 			refreshModel();
 		}
 
@@ -448,12 +426,7 @@ MainView {
 		}
 
 		function openHelp() {
-			var opts = {
-				'contentHeight': mainView.height - units.gu(8),
-				'contentWidth': mainView.width - units.gu(8),
-				'text': i18n.tr("Help menu not yet implemented")
-			}
-			PopupUtils.open(Qt.resolvedUrl("Message.qml"), page1, opts);
+			Pops.showMessage(page1, i18n.tr("Help menu not yet implemented"));
 		}
 	}
 
@@ -475,11 +448,6 @@ MainView {
 		}
 	}
 	function firstRunHelper() {
-		var opts = {
-			'contentHeight': units.gu(40),
-			'contentWidth': units.gu(50),
-			'text': i18n.tr("First run not yet implemented")
-		}
-		PopupUtils.open(Qt.resolvedUrl("Message.qml"), page1, opts);
+		Pops.showMessage(page1, i18n.tr("First run not yet implemented"));
 	}
 }
