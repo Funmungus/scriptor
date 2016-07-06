@@ -90,10 +90,13 @@ Dialog {
 					} else {
 						txtStatus.text = i18n.tr("Unable to copy file ") + fromFile +
 								i18n.tr(" to ") + toFile + "\n";
+						return;
 					}
 				} else {
 					txtStatus.text = i18n.tr("Download complete!");
 				}
+				if (autoStart)
+					PopupUtils.close(dialogue);
 				btnCancel.text = i18n.tr("Finish");
 			}
 		}
@@ -125,7 +128,7 @@ Dialog {
 		onClicked: {
 			if (single.downloading)
 				single.cancel();
-			PopupUtils.close(dialogue)
+			PopupUtils.close(dialogue);
 		}
 	}
 	TextArea {
@@ -151,7 +154,7 @@ Dialog {
 
 	function translateArch() {
 		if (busyboxArchMap[CLICK_ARCH] === undefined)
-			return CLICK_ARCH
+			return CLICK_ARCH;
 		return busyboxArchMap[CLICK_ARCH];
 	}
 }
