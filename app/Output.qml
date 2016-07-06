@@ -129,13 +129,21 @@ Popover {
 				color: colorZ1
 				font.pixelSize: units.gu(3)
 				wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-				text: getText()
+				/* Will be set by checked changed */
+//				text: getText()
 			}
 
 			Connections {
 				target: procBuffer
-				onOutBufferChanged: txtArea.text = getText()
-				onErrBufferChanged: txtArea.text = getText()
+				/* When buffer is changed, first wait for it to be updated */
+				onOutBufferChanged: setTextDelay.start();
+				onErrBufferChanged: setTextDelay.start();
+			}
+			Timer {
+				id: setTextDelay
+				interval: 40
+				repeat: false
+				onTriggered: txtArea.text = getText();
 			}
 		}
 
