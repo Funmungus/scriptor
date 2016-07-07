@@ -86,6 +86,7 @@ Popover {
 				Button {
 					width: units.gu(6)
 					height: width
+					color: colorScriptor
 					iconName: "help"
 				}
 				LabelForm {
@@ -102,6 +103,7 @@ Popover {
 				Button {
 					width: units.gu(6)
 					height: width
+					color: colorScriptor
 					iconName: "settings"
 				}
 				LabelForm {
@@ -118,6 +120,7 @@ Popover {
 				Button {
 					width: units.gu(6)
 					height: width
+					color: colorScriptor
 					iconName: "media-playback-start"
 				}
 				LabelForm {

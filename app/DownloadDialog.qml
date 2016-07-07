@@ -105,6 +105,7 @@ Dialog {
 	Button {
 		id: btnDlBin
 		text: i18n.tr("Download Binary")
+		color: colorScriptor
 		enabled: !single.downloading
 		onClicked: {
 			single.copyBin = true;
@@ -115,6 +116,7 @@ Dialog {
 	Button {
 		id: btnDl
 		text: i18n.tr("Download")
+		color: colorScriptor
 		enabled: !single.downloading
 		onClicked: {
 			single.copyBin = false;
@@ -125,6 +127,7 @@ Dialog {
 	Button {
 		id: btnCancel
 		text: i18n.tr("Cancel")
+		color: colorScriptor
 		onClicked: {
 			if (single.downloading)
 				single.cancel();

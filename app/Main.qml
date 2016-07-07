@@ -68,6 +68,7 @@ MainView {
 	}
 	property string colorZ0: useDarkTheme ? "black" : "white"
 	property string colorZ1: useDarkTheme ? "white" : "black"
+	readonly property string colorScriptor: "#4747ff"
 
 	Component {
 		id: downloaderComponent
@@ -83,6 +84,7 @@ MainView {
 				  i18n.tr("Would you like to download it now?");
 			Button {
 				text: i18n.tr("Yes, please")
+				color: colorScriptor
 				onClicked: {
 					PopupUtils.open(downloaderComponent, null, {'autoStart': true});
 					PopupUtils.close(autoDl);
@@ -90,6 +92,7 @@ MainView {
 			}
 			Button {
 				text: i18n.tr("No thank you")
+				color: colorScriptor
 				onClicked: PopupUtils.close(autoDl);
 			}
 		}

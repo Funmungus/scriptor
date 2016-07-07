@@ -134,6 +134,7 @@ Page {
 					height: units.gu(8)
 					width: units.gu(8)
 					onClicked: root.toolFunctions[index]()
+					color: colorScriptor
 					iconName: root.toolIconNames[index]
 				}
 			}

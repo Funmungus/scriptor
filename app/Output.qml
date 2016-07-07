@@ -155,6 +155,7 @@ Popover {
 				right: parent.right
 			}
 			height: units.gu(8)
+			color: colorSlime
 			text: i18n.tr("Close");
 			onClicked: PopupUtils.close(rootPopover);
 		}

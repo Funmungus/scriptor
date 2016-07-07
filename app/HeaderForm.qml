@@ -66,6 +66,7 @@ PageHeader {
 			bottom: parent.bottom
 		}
 		width: height
+		color: colorScriptor
 		iconName: "settings"
 	}
 }

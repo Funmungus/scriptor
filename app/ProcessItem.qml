@@ -78,6 +78,7 @@ Item {
 		anchors.left: btnStart.right
 		width: units.gu(5)
 		height: parent.height
+		color: colorSlime
 		iconName: "insert-image"
 	}
 	TextField {
@@ -110,6 +111,7 @@ Item {
 		anchors.right: parent.right
 		width: units.gu(5)
 		height: parent.height
+		color: colorSlime
 		iconName: "note"
 		onClicked: {
 			var fullPop = {

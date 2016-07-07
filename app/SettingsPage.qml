@@ -54,6 +54,7 @@ Page {
 				width: parent.width
 				height: units.gu(8)
 				text: i18n.tr("Download Busybox")
+				color: colorScriptor
 				onClicked: {
 					PopupUtils.open(downloaderComponent);
 					settingsFinished();
