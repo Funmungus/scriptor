@@ -25,13 +25,66 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
-import "popups.js" as Pops
+#include "process.h"
+#include <cstdlib>
 
-Dialog {
-	function iconFile(acceptFnc) {
-		Pops.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
+#define STR_HELPER(x) #x
+#define STRINGIFY(x) STR_HELPER(x)
+
+Process::Process(QObject *parent) :
+	QProcess(parent)
+{
+	connect(this, SIGNAL(error(QProcess::ProcessError)), SLOT(onError(QProcess::ProcessError)));
+}
+
+Process::~Process()
+{
+}
+
+QString Process::readAllStandardOutput()
+{
+	QByteArray arr = QProcess::readAllStandardOutput();
+	return QString(arr);
+}
+
+QString Process::readAllStandardError()
+{
+	QByteArray arr = QProcess::readAllStandardError();
+	return QString(arr);
+}
+
+void Process::raise(int errorNumber) const
+{
+	if (errorNumber < 0)
+		errorNumber *= -1;
+	emit error(tr("Process command error ") + QString("%1: %2").
+		arg(errorNumber).arg(strerror(errorNumber)));
+}
+
+void Process::onError(QProcess::ProcessError procErr)
+{
+	QString errStr = "";
+	switch (procErr) {
+	case FailedToStart:
+		errStr = tr("Command not found, or cannot start");
+		break;
+	case Crashed:
+//		errStr = tr("");
+		raise(exitCode());
+		break;
+	case Timedout:
+		errStr = tr("Timed Out");
+		break;
+	case ReadError:
+		errStr = tr("Read Error");
+		break;
+	case WriteError:
+		errStr = tr("Write Error");
+		break;
+	case UnknownError:
+		errStr = tr("Unknown Error");
+		break;
 	}
+	if (!errStr.isEmpty())
+		emit error(errStr);
 }

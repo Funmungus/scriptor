@@ -25,41 +25,39 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "system.h"
-#include <cstdlib>
+#ifndef UTILS_H
+#define UTILS_H
 
-System::System(QObject *parent) :
-	QObject(parent), _command("")
+#include <QObject>
+#include <QFile>
+
+class Utils : public QObject
 {
+	Q_OBJECT
+public:
+	explicit Utils(QObject *parent = 0);
+	~Utils();
 
-}
+	Q_INVOKABLE static QString env(const QString &name);
+	Q_INVOKABLE static QString dataDir();
+	Q_INVOKABLE static bool fileExists(const QString &filePath);
+	Q_INVOKABLE static bool copyFile(const QString &copyFrom, const QString &copyTo);
+	Q_INVOKABLE static bool removeFile(const QString &filePath);
 
-System::~System()
-{
-}
-
-void System::setCommand(const QString &command)
-{
-	if (command != _command) {
-		_command = command;
-		emit commandChanged(_command);
+	Q_INVOKABLE static int permissions(const QString &filename)
+	{
+		return QFile::permissions(filename);
 	}
-}
-
-void System::execute()
-{
-	if (!_command.isEmpty()) {
-		int ret = system(_command.toStdString().c_str());
-		if (ret) {
-			raise(ret);
-		}
+	Q_INVOKABLE static bool setPermissions(const QString &filename, int permissionSpec)
+	{
+		return QFile::setPermissions(filename, (QFile::Permissions)permissionSpec);
 	}
-}
+	Q_INVOKABLE static int binPermissions()
+	{
+		return QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner |
+				QFile::ReadGroup | QFile::ExeGroup |
+				QFile::ReadOther | QFile::ExeOther;
+	}
+};
 
-void System::raise(int errorNumber)
-{
-	if (errorNumber < 0)
-		errorNumber *= -1;
-	emit error(QString("System command error %1: %2").
-		arg(errorNumber).arg(strerror(errorNumber)));
-}
+#endif

@@ -1,4 +1,7 @@
 {
-    "policy_groups": ["content_exchange_source"],
+    "policy_groups": [
+	"content_exchange_source",
+	"networking"
+    ],
     "policy_version": 1.3
 }

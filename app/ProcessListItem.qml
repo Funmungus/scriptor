@@ -30,27 +30,26 @@ import Ubuntu.Components 1.3
 
 /*
  * Element member: index
- * External dependencies: systemList, iconFileDialog
- * systemList object: selected, name, command, icon
+ * External dependencies: procList, iconFileDialog
+ * procList object: selected, name, command, icon
  */
-SystemItem {
+ProcessItem {
 	btnIcon.onClicked: iconFileDialog.iconFile(acceptIcon);
 
-	chkSelected.checked: systemList[index].selected
-	editName.text: systemList[index].name ? systemList[index].name : ""
-	editCmd.text: systemList[index].command ? systemList[index].command : ""
+	chkSelected.checked: procList[index].selected
+	editName.text: procList[index].name ? procList[index].name : ""
+	editCmd.text: procList[index].command ? procList[index].command : ""
 
-	chkSelected.onCheckedChanged: systemList[index].selected = chkSelected.checked
-	btnSystem.onIconSourceChanged: icon = btnSystem.iconSource ? btnSystem.iconSource : ""
-	editName.onTextChanged: systemList[index].name = editName.text ? editName.text : ""
-	editCmd.onTextChanged: systemList[index].command = editCmd.text ? editCmd.text : ""
+	chkSelected.onCheckedChanged: procList[index].selected = chkSelected.checked
+	btnStart.onIconSourceChanged: icon = btnStart.iconSource ? btnStart.iconSource : ""
+	editName.onTextChanged: procList[index].name = editName.text ? editName.text : ""
+	editCmd.onTextChanged: procList[index].command = editCmd.text ? editCmd.text : ""
 
 	// Allow scrolling to view when keyboard is shown
 	editName.onActiveFocusChanged: setLastFocus(editName.activeFocus);
 	editCmd.onActiveFocusChanged: setLastFocus(editCmd.activeFocus);
 
-	function setLastFocus(isFocused) {
-		console.log("focusing ? " + index + isFocused)
+        function setLastFocus(isFocused) {
 		if (isFocused) {
 			lastFocus = index;
 		}
@@ -61,16 +60,16 @@ SystemItem {
 	}
 
 	function acceptIcon(iconPath) {
-		systemList[index].icon = iconPath;
+		procList[index].icon = iconPath;
 		refreshIcon();
 	}
 
 	function refreshIcon() {
-		var str = systemList[index].icon;
+		var str = procList[index].icon;
 		if (str !== null && !str.isNull && !str.isEmpty) {
-			btnSystem.iconSource = str;
+			btnStart.iconSource = str;
 		} else {
-			btnSystem.iconName = "media-playback-start";
+			btnStart.iconName = "media-playback-start";
 		}
 	}
 }

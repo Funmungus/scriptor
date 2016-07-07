@@ -28,10 +28,38 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
-import "popups.js" as Pops
 
-Dialog {
-	function iconFile(acceptFnc) {
-		Pops.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
+Page {
+	id: root
+	signal settingsFinished
+	header: HeaderForm {
+		id: pageHeader
+		btnOptions.visible: false
+	}
+	Component {
+		id: downloaderComponent
+		DownloadDialog {}
+	}
+	ScrollView {
+		width: root.width
+		anchors {
+			top: UbuntuApplication.inputMethod.visible ? root.top : pageHeader.bottom
+			topMargin: units.gu(3)
+			bottom: parent.bottom
+			bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
+		}
+		Column {
+			width: root.width
+			Button {
+				width: parent.width
+				height: units.gu(8)
+				text: i18n.tr("Download Busybox")
+				color: colorScriptor
+				onClicked: {
+					PopupUtils.open(downloaderComponent);
+					settingsFinished();
+				}
+			}
+		}
 	}
 }

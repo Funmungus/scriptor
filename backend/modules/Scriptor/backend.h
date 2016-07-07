@@ -30,6 +30,7 @@
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
+#include "utils.h"
 
 /*
  ----8<-----
@@ -60,6 +61,8 @@ class BackendPlugin : public QQmlExtensionPlugin
 public:
 	void registerTypes(const char *uri);
 	void initializeEngine(QQmlEngine *engine, const char *uri);
+private:
+	Utils _utils;
 };
 #endif // BACKEND_PLUGIN_H
 

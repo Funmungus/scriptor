@@ -25,13 +25,38 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
-import "popups.js" as Pops
+import Scriptor 1.0
 
-Dialog {
-	function iconFile(acceptFnc) {
-		Pops.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
+Process {
+	property string outBuffer: ""
+	property string errBuffer: ""
+	property string combineBuffer: ""
+	onReadyReadStandardOutput: {
+		var loc = readAllStandardOutput();
+		outBuffer += loc;
+		combineBuffer += loc;
+	}
+	onReadyReadStandardError: {
+		var loc = readAllStandardError();
+		errBuffer += loc;
+		combineBuffer += loc;
+	}
+	onFinished: {
+		var errNo = this.exitCode();
+		if (errNo !== 0) {
+			raise(errNo);
+		}
+	}
+
+	function reset() {
+		outBuffer = "";
+		errBuffer = "";
+		combineBuffer = "";
+	}
+	function makeDead() {
+		terminate();
+		if (!waitForFinished(3000)) {
+			kill();
+		}
 	}
 }

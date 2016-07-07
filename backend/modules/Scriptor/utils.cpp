@@ -25,31 +25,67 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#include "utils.h"
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <cstdlib>
 
-#include <QObject>
-
-class System : public QObject
+Utils::Utils(QObject *parent):
+	QObject(parent)
 {
-	Q_OBJECT
-	Q_PROPERTY(QString command READ command WRITE setCommand
-		NOTIFY commandChanged)
-public:
-	explicit System(QObject *parent = 0);
-	~System();
 
-	inline QString command() const
-	{ return ""; }
-	void setCommand(const QString &command);
-signals:
-	void commandChanged(const QString &command);
-	void error(const QString &error);
-public slots:
-	void execute();
-	void raise(int errorNumber);
-private:
-	QString _command;
-};
+}
 
-#endif // SYSTEM_H
+Utils::~Utils()
+{
+
+}
+
+QString Utils::env(const QString &name)
+{
+	return getenv(name.toStdString().c_str());
+}
+
+QString Utils::dataDir()
+{
+	QString appending = getenv("XDG_DATA_HOME");
+	if (appending.isNull() || appending.isEmpty()) {
+		appending = getenv("HOME");
+		if (appending.isNull() || appending.isEmpty())
+			appending = "/home/phablet/.local/share";
+		else
+			appending += "/.local/share";
+	}
+	appending += "/scriptor.newparadigmsoftware";
+	return appending;
+}
+
+bool Utils::fileExists(const QString &filePath)
+{
+	return QFileInfo::exists(filePath);
+}
+
+bool Utils::copyFile(const QString &copyFrom, const QString &copyTo)
+{
+	QFile from(copyFrom);
+	QFile to(copyTo);
+	if (from.exists()) {
+		if (to.exists())
+			to.remove();
+		return from.copy(copyTo);
+	}
+	return false;
+}
+
+bool Utils::removeFile(const QString &filePath)
+{
+	QFileInfo inf(filePath);
+	if (inf.exists()) {
+		if (inf.isDir()) {
+			return QDir(filePath).removeRecursively();
+		} else {
+			return QFile(filePath).remove();
+		}
+	}
+}

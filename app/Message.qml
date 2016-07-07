@@ -25,13 +25,38 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
-import "popups.js" as Pops
 
-Dialog {
-	function iconFile(acceptFnc) {
-		Pops.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
+Popover {
+	contentHeight: rectFrame.height
+	contentWidth: rectFrame.width
+	property alias text: messageText.text
+
+	/* frame */
+	Rectangle {
+		id: rectFrame
+		color: colorZ1
+		height: rectBg.height + units.gu(2)
+		width: rectBg.width + units.gu(2)
+	}
+
+	/* bg */
+	Rectangle {
+		id: rectBg
+		color: colorZ0
+		height: messageText.height + units.gu(2)
+		width: messageText.width + units.gu(2)
+		x: units.gu(1)
+		y: units.gu(1)
+
+		LabelArea {
+			id: messageText
+			horizontalAlignment: Text.AlignHCenter
+			verticalAlignment: Text.AlignVCenter
+			color: colorZ1
+			font.pixelSize: units.gu(3)
+		}
 	}
 }
