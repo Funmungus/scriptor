@@ -25,38 +25,44 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.4
+import QtQuick 2.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
-Popover {
-	contentHeight: rectFrame.height
-	contentWidth: rectFrame.width
-	property alias text: messageText.text
-
-	/* frame */
-	Rectangle {
-		id: rectFrame
-		color: colorZ1
-		height: rectBg.height + units.gu(2)
-		width: rectBg.width + units.gu(2)
+Page {
+	id: root
+	property var pageStack
+	header: HeaderForm {
+		id: pageHeader
+		btnOptions.visible: false
 	}
-
-	/* bg */
-	Rectangle {
-		id: rectBg
-		color: colorZ0
-		height: messageText.height + units.gu(2)
-		width: messageText.width + units.gu(2)
-		x: units.gu(1)
-		y: units.gu(1)
-
-		LabelArea {
-			id: messageText
-			horizontalAlignment: Text.AlignHCenter
-			verticalAlignment: Text.AlignVCenter
-			color: colorZ1
-			font.pixelSize: units.gu(3)
+	Component {
+		id: downloaderComponent
+		DownloadDialog {
+			id: downloader
+		}
+	}
+	ScrollView {
+		width: root.width
+		anchors {
+			top: UbuntuApplication.inputMethod.visible ? root.top : pageHeader.bottom
+			topMargin: units.gu(3)
+			bottom: parent.bottom
+			bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
+		}
+		Column {
+			width: root.width
+			Button {
+				width: parent.width
+				height: units.gu(8)
+				text: i18n.tr("Download Busybox")
+				onClicked: {
+					PopupUtils.open(downloaderComponent);
+					if (pageStack !== undefined) {
+						pageStack.pop();
+					}
+				}
+			}
 		}
 	}
 }

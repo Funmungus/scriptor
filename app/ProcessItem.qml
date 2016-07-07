@@ -69,7 +69,7 @@ Item {
 		}
 		height: units.gu(10)
 		width: height
-		color: "#00000000"
+		color: colorZ0
 		iconName: "media-playback-start"
 		onClicked: {
 			if (procBuffer.state() == ProcessNotRunning) {
