@@ -9,7 +9,7 @@
 	    "desktop": "Scriptor.desktop"
 	}
     },
-    "version": "0.4",
+    "version": "0.5",
     "maintainer": "Jonathan Pelletier <funmungus@gmail.com>",
     "framework": "ubuntu-sdk-15.04.4"
 }
