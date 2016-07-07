@@ -47,6 +47,7 @@ MainView {
 	id: mainView
 	width: windowSettings.width
 	height: windowSettings.height
+	backgroundColor: colorZ0
 
 	property alias useDarkTheme: windowSettings.useDarkTheme
 	property alias showStdOut: windowSettings.showStdOut
@@ -99,13 +100,7 @@ MainView {
 		}
 	}
 
-	Component.onCompleted: firstCheckInitialize();
-
-	/* All page bg */
-	Rectangle {
-		anchors.fill: parent
-		color: colorZ0
-	}
+	Component.onCompleted: firstRunDelay.start()
 
 	Page {
 		id: page1
@@ -116,10 +111,6 @@ MainView {
 		header: PageHeader {
 			id: pageHeader
 			visible: !UbuntuApplication.inputMethod.visible
-			Rectangle {
-				anchors.fill: parent
-				color: colorZ0
-			}
 
 			Icon {
 				id: headerIcon
@@ -134,7 +125,6 @@ MainView {
 					verticalCenter: parent.verticalCenter
 				}
 				text: i18n.tr("-gooey")
-				color: colorZ1
 			}
 			LabelForm {
 				anchors {
@@ -143,7 +133,6 @@ MainView {
 				}
 				height: parent.height
 				text: i18n.tr("Scriptor")
-				color: colorZ1
 				font.pixelSize: height * 2 / 3
 			}
 			Button {
@@ -213,16 +202,6 @@ MainView {
 				}
 			}
 
-			Rectangle {
-				anchors {
-					top: toolBarListView.top
-					left: parent.left
-					right: parent.right
-					bottom: chkSelectAll.bottom
-				}
-				color: colorZ0
-			}
-
 			ListView {
 				id: toolBarListView
 				orientation: ListView.Horizontal
@@ -287,7 +266,6 @@ MainView {
 				}
 				verticalAlignment: Text.AlignVCenter
 				font.pixelSize: height * 2 / 3
-				color: colorZ1
 			}
 		}
 
@@ -439,6 +417,13 @@ MainView {
 //		onFolderChanged: windowSettings.iconFolder = folder
 	}
 
+	Timer {
+		id: firstRunDelay
+		repeat: false
+		interval: 200
+		onTriggered: firstCheckInitialize()
+	}
+
 	function firstCheckInitialize() {
 		if (windowSettings.lastRunVersion < applicationVersion) {
 			if (!utils.fileExists(binBusybox))
@@ -447,7 +432,15 @@ MainView {
 			windowSettings.lastRunVersion = applicationVersion;
 		}
 	}
+	Component {
+		id: firstRunComponent
+		FirstRun {}
+	}
 	function firstRunHelper() {
-		Pops.showMessage(page1, i18n.tr("First run not yet implemented"));
+		var opts = {
+			'contentWidth': page1.width - units.gu(10),
+			'contentHeight': page1.height - units.gu(10)
+		};
+		PopupUtils.open(firstRunComponent, page1, opts);
 	}
 }

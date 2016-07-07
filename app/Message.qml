@@ -30,22 +30,24 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
 Popover {
+	contentHeight: rectFrame.height
+	contentWidth: rectFrame.width
 	property alias text: messageText.text
-	contentWidth: messageText.width
-	contentHeight: messageText.height
 
 	/* frame */
 	Rectangle {
+		id: rectFrame
 		color: colorZ1
-		height: contentHeight
-		width: contentWidth
+		height: rectBg.height + units.gu(2)
+		width: rectBg.width + units.gu(2)
 	}
 
 	/* bg */
 	Rectangle {
+		id: rectBg
 		color: colorZ0
-		height: contentHeight - units.gu(2)
-		width: contentWidth - units.gu(2)
+		height: messageText.height + units.gu(2)
+		width: messageText.width + units.gu(2)
 		x: units.gu(1)
 		y: units.gu(1)
 
@@ -54,8 +56,6 @@ Popover {
 			horizontalAlignment: Text.AlignHCenter
 			verticalAlignment: Text.AlignVCenter
 			color: colorZ1
-			x: -units.gu(1)
-			y: -units.gu(1)
 			font.pixelSize: units.gu(3)
 		}
 	}
