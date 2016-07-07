@@ -40,37 +40,29 @@ Item {
 	property alias editCmd: editCmd
 	property bool isExpanded: false
 
-	height: isExpanded ? units.gu(32) : units.gu(15)
+	height: isExpanded ? units.gu(28) : units.gu(14)
 
 	ProcessBuffer {
 		id: procBuffer
-		onError: {
-			Pops.showMessage(btnStart, error);
-		}
+		onError: Pops.showMessage(btnStart, error);
 		/* Should this be the data or cache directory? */
 		Component.onCompleted: procBuffer.setWorkingDirectory(utils.dataDir())
 	}
 
 	CheckBox {
 		id: chkSelected
-		anchors {
-			top: parent.top
-			left: parent.left
-			bottom: parent.bottom
-		}
+		anchors.left: parent.left
 		width: units.gu(5)
+		height: parent.height
 	}
 
 	Button {
 		id: btnStart
-		anchors {
-			top: parent.top
-			left: chkSelected.right
-		}
-		height: units.gu(10)
+		anchors.left: chkSelected.right
+		height: parent.height
 		width: height
-		color: colorZ0
 		iconName: "media-playback-start"
+		color: colorZ0
 		onClicked: {
 			if (procBuffer.state() == ProcessNotRunning) {
 				procBuffer.reset();
@@ -83,22 +75,19 @@ Item {
 	}
 	Button {
 		id: btnIcon
-		anchors {
-			top: btnStart.bottom
-			bottom: parent.bottom
-			left: btnStart.left
-			right: btnStart.right
-		}
-		text: i18n.tr("Browse...")
+		anchors.left: btnStart.right
+		width: units.gu(5)
+		height: parent.height
+		iconName: "insert-image"
 	}
 	TextField {
 		id: editName
 		anchors {
-			left: btnStart.right
+			left: btnIcon.right
 			top: parent.top
 			right: btnView.left
 		}
-		height: parent.height / 2
+		height: units.gu(5)
 		placeholderText: i18n.tr("Name")
 		font.pixelSize: height * 2 / 3
 		mouseSelectionMode: TextEdit.SelectCharacters
@@ -118,12 +107,9 @@ Item {
 	}
 	Button {
 		id: btnView
-		anchors {
-			top: parent.top
-			right: parent.right
-			bottom: parent.bottom
-		}
+		anchors.right: parent.right
 		width: units.gu(5)
+		height: parent.height
 		iconName: "note"
 		onClicked: {
 			var fullPop = {
