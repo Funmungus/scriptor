@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/graphics">
+    <file alias="Scriptor.png">../app/graphics/Scriptor.png</file>
+</qresource>
+</RCC>

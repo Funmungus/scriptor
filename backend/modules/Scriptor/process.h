@@ -25,13 +25,51 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
-import "popups.js" as Pops
+#ifndef PROCESS_H
+#define PROCESS_H
 
-Dialog {
-	function iconFile(acceptFnc) {
-		Pops.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
+#include <QProcess>
+
+class Process : public QProcess
+{
+	Q_OBJECT
+public:
+	explicit Process(QObject *parent = 0);
+	~Process();
+
+	Q_INVOKABLE QString readAllStandardOutput();
+	Q_INVOKABLE QString readAllStandardError();
+	Q_INVOKABLE void start(const QString &command)
+	{
+		QProcess::start(command);
 	}
-}
+	Q_INVOKABLE QString workingDirectory() const
+	{
+		return QProcess::workingDirectory();
+	}
+	Q_INVOKABLE void setWorkingDirectory(const QString &dir)
+	{
+		QProcess::setWorkingDirectory(dir);
+	}
+	Q_INVOKABLE int state() const
+	{
+		return QProcess::state();
+	}
+	Q_INVOKABLE int exitCode() const
+	{
+		return QProcess::exitCode();
+	}
+	Q_INVOKABLE bool waitForFinished(int msecs = 30000)
+	{
+		return QProcess::waitForFinished(msecs);
+	}
+
+signals:
+	void error(const QString &error) const;
+public slots:
+	void raise(int errorNumber) const;
+private slots:
+	void onError(QProcess::ProcessError);
+};
+
+#endif // PROCESS_H

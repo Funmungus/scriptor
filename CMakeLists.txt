@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.9)
 
 # Do not remove this line, its required for the correct functionality of the Ubuntu-SDK
 set(UBUNTU_MANIFEST_PATH "manifest.json.in" CACHE INTERNAL "Tells QtCreator location and name of the manifest file")
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(FindPkgConfig)
 find_package(Qt5Core)
@@ -45,6 +45,8 @@ execute_process(
   OUTPUT_VARIABLE CLICK_ARCH
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+# Make CLICK_ARCH available in C++ source
+add_definitions(-DCLICK_ARCH=${CLICK_ARCH})
 
 configure_file(manifest.json.in ${CMAKE_CURRENT_BINARY_DIR}/manifest.json)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/manifest.json

@@ -25,13 +25,48 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.0
+import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
-import "popups.js" as Pops
 
-Dialog {
-	function iconFile(acceptFnc) {
-		Pops.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
+PageHeader {
+	visible: !UbuntuApplication.inputMethod.visible
+	property alias icon: icon
+	property alias lblTitle: lblTitle
+	property alias btnOptions: btnOptions
+	Icon {
+		id: icon
+		source: Qt.resolvedUrl("qrc:/graphics/Scriptor.png")
+		anchors.horizontalCenter: parent.horizontalCenter
+		height: parent.height
+		width: height
+	}
+	LabelForm {
+		visible: icon.visible
+		anchors {
+			left: icon.right
+			verticalCenter: parent.verticalCenter
+		}
+		text: i18n.tr("-gooey")
+	}
+	LabelForm {
+		id: lblTitle
+		anchors {
+			left: parent.left
+			leftMargin: units.gu(5)
+		}
+		height: parent.height
+		text: i18n.tr("Scriptor")
+		font.pixelSize: height * 2 / 3
+	}
+	Button {
+		id: btnOptions
+		anchors {
+			top: parent.top
+			right: parent.right
+			bottom: parent.bottom
+		}
+		width: height
+		color: colorScriptor
+		iconName: "settings"
 	}
 }
