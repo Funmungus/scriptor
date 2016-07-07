@@ -31,16 +31,14 @@ import Ubuntu.Components.Popups 1.3
 
 Page {
 	id: root
-	property var pageStack
+	signal settingsFinished
 	header: HeaderForm {
 		id: pageHeader
 		btnOptions.visible: false
 	}
 	Component {
 		id: downloaderComponent
-		DownloadDialog {
-			id: downloader
-		}
+		DownloadDialog {}
 	}
 	ScrollView {
 		width: root.width
@@ -58,9 +56,7 @@ Page {
 				text: i18n.tr("Download Busybox")
 				onClicked: {
 					PopupUtils.open(downloaderComponent);
-					if (pageStack !== undefined) {
-						pageStack.pop();
-					}
+					settingsFinished();
 				}
 			}
 		}

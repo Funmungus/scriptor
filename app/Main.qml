@@ -29,9 +29,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 import Qt.labs.settings 1.0
-import QtQuick.LocalStorage 2.0
 import Scriptor 1.0
-import "storage.js" as Storage
 import "popups.js" as Pops
 
 MainView {
@@ -40,14 +38,19 @@ MainView {
 
 	readonly property string binBusybox: utils.dataDir() + "/bin/busybox";
 	readonly property int applicationVersion: 1
-	property var procList: [{selected:false, name:"", command:"",
-			icon:""}];
-	property int lastFocus: -1;
 
 	id: mainView
 	width: windowSettings.width
 	height: windowSettings.height
 	backgroundColor: colorZ0
+
+	Component.onCompleted: firstRunDelay.start()
+
+	Component.onDestruction: {
+		windowSettings.width = mainView.width
+		windowSettings.height = mainView.height
+//		windowSettings.iconFolder = iconFileDialog.folder
+	}
 
 	property alias useDarkTheme: windowSettings.useDarkTheme
 	property alias showStdOut: windowSettings.showStdOut
@@ -66,25 +69,17 @@ MainView {
 	property string colorZ0: useDarkTheme ? "black" : "white"
 	property string colorZ1: useDarkTheme ? "white" : "black"
 
-	Component.onDestruction: {
-		windowSettings.width = mainView.width
-		windowSettings.height = mainView.height
-//		windowSettings.iconFolder = iconFileDialog.folder
-	}
-
 	Component {
 		id: downloaderComponent
-		DownloadDialog {
-			id: downloader
-		}
+		DownloadDialog {}
 	}
 	Component {
 		id: autoDlComponent
 		Dialog {
 			id: autoDl
 			title: i18n.tr("Download Busybox?");
-			text: i18n.tr("Busybox is not found at ") +
-				  binBusybox + "\n" + i18n.tr("If you installed this app from the Ubuntu store, then all other commands will be blocked by AppArmor.\n") +
+			text: i18n.tr("Busybox is not found at ") + binBusybox + "\n" +
+				  i18n.tr("If you installed this app from the Ubuntu store, then all other commands will be blocked by AppArmor.\n") +
 				  i18n.tr("Would you like to download it now?");
 			Button {
 				text: i18n.tr("Yes, please")
@@ -100,284 +95,18 @@ MainView {
 		}
 	}
 
-	Component.onCompleted: firstRunDelay.start()
-
 	PageStack {
 		id: pageStack
-		Component.onCompleted: push(page1)
-		Page {
-			id: page1
+		Component.onCompleted: push(scriptPage)
+		ScriptPage {
+			id: scriptPage
 			visible: false
-			property var toolIconNames: ["add", "remove", "reset", "save", "up", "down", "help"]
-			property var toolFunctions: [addProc, removeProc,
-				loadList, saveList, moveUp, moveDown, openHelp]
-
-			header: HeaderForm {
-				id: pageHeader
-				btnOptions.onClicked: pageStack.push(page2);
-			}
-
-			Rectangle {
-				id: pageView
-				anchors {
-					top: UbuntuApplication.inputMethod.visible ? parent.top : pageHeader.bottom
-					left: parent.left
-					right: parent.right
-					bottom: parent.bottom
-					bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
-				}
-
-				color: colorZ0
-				ListView {
-					id: procListView
-					orientation: ListView.Vertical
-					flickableDirection: Flickable.VerticalFlick
-					spacing: units.gu(1)
-					anchors {
-						top: chkSelectAll.bottom
-						left: parent.left
-						right: parent.right
-						bottom: parent.bottom
-						margins: units.gu(1)
-					}
-					Connections {
-						target: UbuntuApplication.inputMethod
-						onVisibleChanged: {
-							if (UbuntuApplication.inputMethod.visible) {
-								if (lastFocus > 0 && lastFocus < listModel.count) {
-									procListView.currentIndex = -1;
-									procListView.currentIndex = lastFocus;
-								}
-							}
-						}
-					}
-
-					model: ListModel {
-						id: listModel
-						ListElement {
-							index: 0
-						}
-					}
-
-					delegate: Component {
-						id: listDelegate
-						Loader {
-							source: Qt.resolvedUrl("ProcessListItem.qml")
-							anchors.left: parent.left
-							anchors.right: parent.right
-						}
-					}
-				}
-
-				ListView {
-					id: toolBarListView
-					orientation: ListView.Horizontal
-					flickableDirection: Flickable.HorizontalFlick
-					spacing: units.gu(1)
-					anchors {
-						top: parent.top
-						left: parent.left
-						right: parent.right
-						margins: units.gu(1)
-					}
-					height: units.gu(8)
-
-					model: ListModel {
-						id: toolModel
-						ListElement { index: 0 }
-						ListElement { index: 1 }
-						ListElement { index: 2 }
-						ListElement { index: 3 }
-						ListElement { index: 4 }
-						ListElement { index: 5 }
-						ListElement { index: 6 }
-					}
-
-					delegate: Component {
-						Button {
-							height: units.gu(8)
-							width: units.gu(8)
-							onClicked: page1.toolFunctions[index]()
-							iconName: page1.toolIconNames[index]
-						}
-					}
-				}
-
-				CheckBox {
-					id: chkSelectAll
-					anchors {
-						top: toolBarListView.bottom
-						left: parent.left
-						margins: units.gu(1)
-					}
-					height: units.gu(8)
-					width: units.gu(8)
-
-					onCheckedChanged: {
-						var bSel = chkSelectAll.checked;
-						var i = procList.length;
-						while (i--) {
-							procList[i].selected = bSel;
-						}
-						page1.refreshModel();
-					}
-				}
-				LabelForm {
-					text: i18n.tr("Select All")
-					anchors {
-						top: chkSelectAll.top
-						bottom: chkSelectAll.bottom
-						left: chkSelectAll.right
-						right: parent.right
-						margins: units.gu(1)
-					}
-					verticalAlignment: Text.AlignVCenter
-					font.pixelSize: height * 2 / 3
-				}
-			}
-
-			Component.onCompleted: {
-				loadList();
-			}
-
-			Keys.onPressed: {
-				switch (event.key) {
-				case Qt.Key_S:
-					if (event.modifiers === Qt.ControlModifier ||
-							event.modifiers === Qt.AltModifier) {
-						saveList()
-					}
-					break;
-				case Qt.Key_L:
-					if (event.modifiers === Qt.ControlModifier ||
-							event.modifiers === Qt.AltModifier) {
-						loadList()
-					}
-					break;
-				case Qt.Key_Up:
-					procListView.flick(0, 500)
-					break;
-				case Qt.Key_Down:
-					procListView.flick(0, -500)
-					break;
-				case Qt.Key_PageUp:
-					procListView.flick(0, 1024)
-					break;
-				case Qt.Key_PageDown:
-					procListView.flick(0, -1024)
-					break;
-				case Qt.Key_Plus:
-				case Qt.Key_plusminus:
-				case Qt.Key_Equal:
-					addProc()
-					break;
-				case Qt.Key_Minus:
-					removeProc()
-					break;
-				}
-			}
-
-			function addProc() {
-				var i = procList.length;
-				while (i-- > 0) {
-					if (procList[i].selected) {
-						if (i == procList.length - 1)
-							pushEmptyProc();
-						else
-							insertProc(i + 1);
-						return;
-					}
-				}
-				pushEmptyProc();
-			}
-
-			function pushEmptyProc() {
-				if (utils.fileExists(binBusybox))
-					pushProc("", "busybox sh -c \"\"", "");
-				else
-					pushProc("", "bash -c \"\"", "");
-			}
-
-			function pushProc(strN, strC, strI) {
-				procList.push({selected:false, name:strN,
-							command:strC, icon:strI});
-				listModel.append({index:listModel.count});
-			}
-
-			function insertProc(pt) {
-				procList.splice(pt, 0, {selected:false, name:"",
-						  command:"", icon:""});
-				refreshModel();
-			}
-
-			function removeProc() {
-				var isRemoved = false;
-				var i = listModel.count;
-				while (i-- > 0) {
-					if (procList[i].selected) {
-						procList.splice(i, 1);
-						isRemoved = true;
-					}
-				}
-				if (isRemoved) {
-					refreshModel();
-				} else if (procList.length > 0){
-					procList.pop();
-					listModel.remove(listModel.count - 1, 1);
-				}
-				chkSelectAll.checked = false;
-			}
-
-			function loadList() {
-				Storage.initDb();
-				var localCount = Storage.scriptCount();
-				var i;
-				var script;
-				procList.splice(0, procList.length);
-				listModel.clear();
-				for (i = 0; i < localCount; i++) {
-					script = Storage.script(i);
-					pushProc(script.name, script.command, script.icon);
-				}
-			}
-
-			function saveList() {
-				var localCount = listModel.count;
-				var i;
-				var curItem;
-				Storage.initDb(localCount);
-				for (i = 0; i < localCount; i++) {
-					curItem = procList[i];
-					Storage.setScript(i, curItem.name, curItem.command, curItem.icon);
-				}
-			}
-
-			function moveUp() {
-				Pops.showMessage(toolBarListView, i18n.tr("move up not yet implemented"));
-				refreshModel();
-			}
-
-			function moveDown() {
-				Pops.showMessage(toolBarListView, i18n.tr("move down not yet implemented"));
-				refreshModel();
-			}
-
-			function refreshModel() {
-				listModel.clear();
-				var i = 0;
-				while (listModel.count < procList.length) {
-					listModel.append({index: i++});
-				}
-			}
-
-			function openHelp() {
-				Pops.showMessage(page1, i18n.tr("Help menu not yet implemented"));
-			}
+			onSettingsClicked: pageStack.push(settingsPage);
 		}
 		SettingsPage {
-			id: page2
+			id: settingsPage
 			visible: false
-			pageStack: pageStack
+			onSettingsFinished: pageStack.pop();
 		}
 	}
 
@@ -411,9 +140,9 @@ MainView {
 	}
 	function firstRunHelper() {
 		var opts = {
-			'contentWidth': page1.width - units.gu(10),
-			'contentHeight': page1.height - units.gu(10)
+			'contentWidth': scriptPage.width - units.gu(10),
+			'contentHeight': scriptPage.height - units.gu(10)
 		};
-		PopupUtils.open(firstRunComponent, page1, opts);
+		PopupUtils.open(firstRunComponent, scriptPage, opts);
 	}
 }
