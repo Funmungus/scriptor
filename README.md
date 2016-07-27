@@ -23,5 +23,6 @@ click, click-buddy, sed, grep, dpkg, adb
 To build a confined package, execute build_multi.sh from the source directory.
 To build an unconfined package, execute openstore.sh.
 
-Install by copying to the target, and executing
-`pkcon install-local --allow-untrusted `
+Install by executing install.sh.  The install
+script has one optional parameter, which is a device serial number.  Refer
+to `adb devices` for more info.
