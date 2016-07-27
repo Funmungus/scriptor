@@ -40,8 +40,7 @@ Page {
 	property var toolIconNames: ["add", "remove", "reset", "save", "up", "down", "help"]
 	property var toolFunctions: [addProc, removeProc,
 		loadList, saveList, moveUp, moveDown, openHelp]
-	property var procList: [{selected:false, name:"", command:"",
-			icon:""}];
+	property var procList: [];
 	property int lastFocus: -1;
 
 	signal settingsClicked
@@ -57,13 +56,12 @@ Page {
 		id: pageView
 		anchors {
 			top: UbuntuApplication.inputMethod.visible ? parent.top : pageHeader.bottom
-			left: parent.left
-			right: parent.right
 			bottom: parent.bottom
 			bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
 		}
+		width: parent.width
 
-		color: "black"
+		color: colorZ0
 		ListView {
 			id: procListView
 			orientation: ListView.Vertical
@@ -71,16 +69,15 @@ Page {
 			spacing: units.gu(1)
 			anchors {
 				top: chkSelectAll.bottom
-				left: parent.left
-				right: parent.right
 				bottom: parent.bottom
 				margins: units.gu(1)
 			}
+			width: parent.width
 			Connections {
 				target: UbuntuApplication.inputMethod
 				onVisibleChanged: {
 					if (UbuntuApplication.inputMethod.visible) {
-						if (lastFocus > 0 && lastFocus < listModel.count) {
+						if (lastFocus > 0 && lastFocus < procListView.model) {
 							procListView.currentIndex = -1;
 							procListView.currentIndex = lastFocus;
 						}
@@ -88,21 +85,8 @@ Page {
 				}
 			}
 
-			model: ListModel {
-				id: listModel
-				ListElement {
-					index: 0
-				}
-			}
-
-			delegate: Component {
-				id: listDelegate
-				Loader {
-					source: Qt.resolvedUrl("ProcessListItem.qml")
-					anchors.left: parent.left
-					anchors.right: parent.right
-				}
-			}
+			model: procList.length
+			delegate: Component { ProcessListItem { width: parent.width }}
 		}
 
 		ListView {
@@ -110,25 +94,12 @@ Page {
 			orientation: ListView.Horizontal
 			flickableDirection: Flickable.HorizontalFlick
 			spacing: units.gu(1)
-			anchors {
-				top: parent.top
-				left: parent.left
-				right: parent.right
-				margins: units.gu(1)
-			}
+			anchors.top: parent.top
+			anchors.margins: units.gu(1)
 			height: units.gu(8)
+			width: parent.width
 
-			model: ListModel {
-				id: toolModel
-				ListElement { index: 0 }
-				ListElement { index: 1 }
-				ListElement { index: 2 }
-				ListElement { index: 3 }
-				ListElement { index: 4 }
-				ListElement { index: 5 }
-				ListElement { index: 6 }
-			}
-
+			model: 7
 			delegate: Component {
 				Button {
 					height: units.gu(8)
@@ -211,53 +182,62 @@ Page {
 	}
 
 	function addProc() {
-		var i = procList.length;
+		var i = procList.length - 1;
+		/* Last item selected, just push */
+		if (procList.length == 0 || procList[i].selected) {
+			pushEmptyProc();
+			return;
+		}
 		while (i-- > 0) {
 			if (procList[i].selected) {
-				if (i == procList.length - 1)
-					pushEmptyProc();
-				else
-					insertProc(i + 1);
+				insertProc(i + 1);
 				return;
 			}
 		}
 		pushEmptyProc();
 	}
 
-	function pushEmptyProc() {
+	function emptyProc() {
 		if (utils.fileExists(binBusybox))
-			pushProc("", "busybox sh -c \"\"", "");
+			return {selected:false, name:"",
+				command:"busybox sh -c \"busybox \"", icon:""};
 		else
-			pushProc("", "bash -c \"\"", "");
+			return {selected:false, name:"",
+				command:"bash -c \"\"", icon:""};
 	}
 
-	function pushProc(strN, strC, strI) {
-		procList.push({selected:false, name:strN,
-					command:strC, icon:strI});
-		listModel.append({index:listModel.count});
+	function makeProc(strN, strC, strI) {
+		return {selected:false, name:strN,
+			command:strC, icon:strI};
+	}
+
+	function pushEmptyProc() {
+		pushProc(emptyProc());
+	}
+
+	function pushProc(proc) {
+		procList.push(proc);
+		procListView.model++;
 	}
 
 	function insertProc(pt) {
-		procList.splice(pt, 0, {selected:false, name:"",
-				  command:"", icon:""});
+		procList.splice(pt, 0, emptyProc());
 		refreshModel();
 	}
 
 	function removeProc() {
 		var isRemoved = false;
-		var i = listModel.count;
+		var i = procList.length;
+		procListView.model = 0;
 		while (i-- > 0) {
 			if (procList[i].selected) {
 				procList.splice(i, 1);
 				isRemoved = true;
 			}
 		}
-		if (isRemoved) {
-			refreshModel();
-		} else if (procList.length > 0){
+		if (!isRemoved && procList.length > 0)
 			procList.pop();
-			listModel.remove(listModel.count - 1, 1);
-		}
+		refreshModel();
 		chkSelectAll.checked = false;
 	}
 
@@ -266,20 +246,20 @@ Page {
 		var localCount = Storage.scriptCount();
 		var i;
 		var script;
+		procListView.model = 0;
 		procList.splice(0, procList.length);
-		listModel.clear();
 		for (i = 0; i < localCount; i++) {
 			script = Storage.script(i);
-			pushProc(script.name, script.command, script.icon);
+			script.selected = false;
+			pushProc(script);
 		}
 	}
 
 	function saveList() {
-		var localCount = listModel.count;
 		var i;
 		var curItem;
-		Storage.initDb(localCount);
-		for (i = 0; i < localCount; i++) {
+		Storage.initDb(procList.model);
+		for (i = 0; i < procList.model; i++) {
 			curItem = procList[i];
 			Storage.setScript(i, curItem.name, curItem.command, curItem.icon);
 		}
@@ -287,20 +267,15 @@ Page {
 
 	function moveUp() {
 		Pops.showMessage(toolBarListView, i18n.tr("move up not yet implemented"));
-		refreshModel();
 	}
 
 	function moveDown() {
 		Pops.showMessage(toolBarListView, i18n.tr("move down not yet implemented"));
-		refreshModel();
 	}
 
 	function refreshModel() {
-		listModel.clear();
-		var i = 0;
-		while (listModel.count < procList.length) {
-			listModel.append({index: i++});
-		}
+		procListView.model = 0;
+		procListView.model = procList.length;
 	}
 
 	function openHelp() {
