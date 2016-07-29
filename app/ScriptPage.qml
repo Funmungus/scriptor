@@ -264,8 +264,8 @@ Page {
 	function saveList() {
 		var i;
 		var curItem;
-		Storage.initDb(procList.model);
-		for (i = 0; i < procList.model; i++) {
+		Storage.initDb(procList.length);
+		for (i = 0; i < procList.length; i++) {
 			curItem = procList[i];
 			Storage.setScript(i, curItem.name, curItem.command, curItem.icon);
 		}
