@@ -63,8 +63,12 @@ Page {
 					height: units.gu(8)
 					width: units.gu(8)
 
-					checked: usageSettings.isProcDisplay
 					onCheckedChanged: usageSettings.isProcDisplay = checked
+				}
+				Binding {
+					target: chkProcDisplay
+					property: "checked"
+					value: usageSettings.isProcDisplay
 				}
 				LabelForm {
 					text: i18n.tr("Show command output every time it is used")

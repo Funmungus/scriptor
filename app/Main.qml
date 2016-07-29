@@ -108,11 +108,20 @@ MainView {
 			id: scriptPage
 			visible: false
 			onSettingsClicked: pageStack.push(settingsPage);
+			onShowProcBuffer: {
+				outputPage.procBuffer = procBuffer;
+				pageStack.push(outputPage);
+			}
 		}
 		SettingsPage {
 			id: settingsPage
 			visible: false
 			onSettingsFinished: pageStack.pop();
+		}
+		Output {
+			id: outputPage
+			visible: false
+			onSettingsClicked: pageStack.push(settingsPage);
 		}
 	}
 

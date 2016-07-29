@@ -44,6 +44,7 @@ Page {
 	property int lastFocus: -1;
 
 	signal settingsClicked
+	signal showProcBuffer(var procBuffer)
 	property alias pageHeader: pageHeader
 	header: HeaderForm {
 		id: pageHeader
@@ -86,7 +87,12 @@ Page {
 			}
 
 			model: procList.length
-			delegate: Component { ProcessListItem { width: parent.width }}
+			delegate: Component {
+				ProcessListItem {
+					width: parent.width;
+					onShowProcBuffer: root.showProcBuffer(procBuffer);
+				}
+			}
 		}
 
 		ListView {
