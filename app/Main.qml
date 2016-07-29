@@ -52,22 +52,25 @@ MainView {
 //		windowSettings.iconFolder = iconFileDialog.folder
 	}
 
-	property alias useDarkTheme: windowSettings.useDarkTheme
-	property alias showStdOut: windowSettings.showStdOut
-	property alias showStdErr: windowSettings.showStdErr
 	Settings {
 		id: windowSettings
 		category: "Window"
 		property int width: units.gu(100)
 		property int height: units.gu(75)
-		property string iconFolder: picturesLocation
 		property bool useDarkTheme: true
-		property bool showStdOut: true
-		property bool showStdErr: true
 		property int lastRunVersion: 0
 	}
-	property string colorZ0: useDarkTheme ? "black" : "white"
-	property string colorZ1: useDarkTheme ? "white" : "black"
+	Settings {
+		id: usageSettings
+		category: "Usage"
+		property bool showStdOut: true
+		property bool showStdErr: true
+		property bool isProcDisplay: false
+		property string iconFolder: picturesLocation
+	}
+
+	property string colorZ0: windowSettings.useDarkTheme ? "black" : "white"
+	property string colorZ1: windowSettings.useDarkTheme ? "white" : "black"
 	readonly property string colorScriptor: "#4747ff"
 
 	Component {
@@ -105,11 +108,20 @@ MainView {
 			id: scriptPage
 			visible: false
 			onSettingsClicked: pageStack.push(settingsPage);
+			onShowProcBuffer: {
+				outputPage.procBuffer = procBuffer;
+				pageStack.push(outputPage);
+			}
 		}
 		SettingsPage {
 			id: settingsPage
 			visible: false
 			onSettingsFinished: pageStack.pop();
+		}
+		Output {
+			id: outputPage
+			visible: false
+			onSettingsClicked: pageStack.push(settingsPage);
 		}
 	}
 

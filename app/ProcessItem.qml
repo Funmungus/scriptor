@@ -42,6 +42,7 @@ Item {
 
 	height: isExpanded ? units.gu(28) : units.gu(14)
 
+	signal showProcBuffer(var procBuffer)
 	ProcessBuffer {
 		id: procBuffer
 		onError: Pops.showMessage(btnStart, error);
@@ -64,6 +65,8 @@ Item {
 		iconName: "media-playback-start"
 		color: colorZ0
 		onClicked: {
+			if (usageSettings.isProcDisplay)
+				showProcBuffer(procBuffer);
 			if (procBuffer.state() == ProcessNotRunning) {
 				procBuffer.reset();
 				procBuffer.start(editCmd.text);
@@ -113,14 +116,6 @@ Item {
 		height: parent.height
 		color: colorScriptor
 		iconName: "note"
-		onClicked: {
-			var fullPop = {
-				'contentWidth': mainView.width,
-				'contentHeight': mainView.height,
-				'text':"Hello all",
-				'procBuffer': procBuffer
-			};
-			PopupUtils.open(Qt.resolvedUrl("Output.qml"), mainView, fullPop);
-		}
+		onClicked: showProcBuffer(procBuffer)
 	}
 }

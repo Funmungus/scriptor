@@ -50,6 +50,39 @@ Page {
 		}
 		Column {
 			width: root.width
+			spacing: units.gu(1)
+			Item {
+				width: root.width
+				height: chkProcDisplay.height
+				CheckBox {
+					id: chkProcDisplay
+					anchors {
+						left: parent.left
+						margins: units.gu(1)
+					}
+					height: units.gu(8)
+					width: units.gu(8)
+
+					onCheckedChanged: usageSettings.isProcDisplay = checked
+				}
+				Binding {
+					target: chkProcDisplay
+					property: "checked"
+					value: usageSettings.isProcDisplay
+				}
+				LabelForm {
+					text: i18n.tr("Show command output every time it is used")
+					anchors {
+						top: chkProcDisplay.top
+						bottom: chkProcDisplay.bottom
+						left: chkProcDisplay.right
+						right: parent.right
+						margins: units.gu(1)
+					}
+					verticalAlignment: Text.AlignVCenter
+					font.pixelSize: height * 2 / 3
+				}
+			}
 			Button {
 				width: parent.width
 				height: units.gu(8)
