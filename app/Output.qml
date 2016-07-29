@@ -33,7 +33,11 @@ import Ubuntu.Components.Popups 1.3
 Popover {
 	property alias textArea: txtArea
 	property var procBuffer
-	property int bufferFlags: showStdOut ? showStdErr ? 3 : 1 : showStdErr ? 2 : 0;
+	property int bufferFlags: {
+		return usageSettings.showStdOut ? usageSettings.showStdErr ?
+											   3 : 1 :
+		usageSettings.showStdErr ? 2 : 0;
+	}
 	id: rootPopover
 	Rectangle {
 		id: rectBoundary
@@ -58,7 +62,7 @@ Popover {
 				height: units.gu(5)
 				width: units.gu(5)
 				onCheckedChanged: {
-					showStdOut = checked;
+					usageSettings.showStdOut = checked;
 					if (checked)
 						bufferFlags |= 1;
 					else
@@ -69,7 +73,7 @@ Popover {
 			Binding {
 				target: chkOut
 				property: "checked"
-				value: showStdOut
+				value: usageSettings.showStdOut
 			}
 			LabelForm {
 				id: txtOut
@@ -92,7 +96,7 @@ Popover {
 				height: units.gu(5)
 				width: units.gu(5)
 				onCheckedChanged: {
-					showStdErr = checked;
+					usageSettings.showStdErr = checked;
 					if (checked)
 						bufferFlags |= 2;
 					else
@@ -103,7 +107,7 @@ Popover {
 			Binding {
 				target: chkErr
 				property: "checked"
-				value: showStdErr
+				value: usageSettings.showStdErr
 			}
 			LabelForm {
 				id: txtErr

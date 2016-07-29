@@ -64,6 +64,8 @@ Item {
 		iconName: "media-playback-start"
 		color: colorZ0
 		onClicked: {
+			if (usageSettings.isProcDisplay)
+				btnView.clicked();
 			if (procBuffer.state() == ProcessNotRunning) {
 				procBuffer.reset();
 				procBuffer.start(editCmd.text);
