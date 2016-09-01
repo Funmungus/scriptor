@@ -69,8 +69,10 @@ MainView {
 		property string iconFolder: picturesLocation
 	}
 
-	property string colorZ0: windowSettings.useDarkTheme ? "black" : "white"
-	property string colorZ1: windowSettings.useDarkTheme ? "white" : "black"
+	property string colorZ0: windowSettings.useDarkTheme ?
+								 "#0f0f0f" : UbuntuColors.porcelain
+	property string colorZ1: windowSettings.useDarkTheme ?
+								 "white" : "black"
 	readonly property string colorScriptor: "#4747ff"
 	readonly property string colorScriptorPressed: "#ff0000"
 
