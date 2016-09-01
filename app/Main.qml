@@ -52,23 +52,29 @@ MainView {
 //		windowSettings.iconFolder = iconFileDialog.folder
 	}
 
-	property alias useDarkTheme: windowSettings.useDarkTheme
-	property alias showStdOut: windowSettings.showStdOut
-	property alias showStdErr: windowSettings.showStdErr
 	Settings {
 		id: windowSettings
 		category: "Window"
 		property int width: units.gu(100)
 		property int height: units.gu(75)
-		property string iconFolder: picturesLocation
 		property bool useDarkTheme: true
-		property bool showStdOut: true
-		property bool showStdErr: true
 		property int lastRunVersion: 0
 	}
-	property string colorZ0: useDarkTheme ? "black" : "white"
-	property string colorZ1: useDarkTheme ? "white" : "black"
+	Settings {
+		id: usageSettings
+		category: "Usage"
+		property bool showStdOut: true
+		property bool showStdErr: true
+		property bool isProcDisplay: false
+		property string iconFolder: picturesLocation
+	}
+
+	property string colorZ0: windowSettings.useDarkTheme ?
+								 "#0f0f0f" : UbuntuColors.porcelain
+	property string colorZ1: windowSettings.useDarkTheme ?
+								 "white" : "black"
 	readonly property string colorScriptor: "#4747ff"
+	readonly property string colorScriptorPressed: "#ff0000"
 
 	Component {
 		id: downloaderComponent
@@ -82,17 +88,15 @@ MainView {
 			text: i18n.tr("Busybox is not found at ") + binBusybox + "\n" +
 				  i18n.tr("If you installed this app from the Ubuntu store, then all other commands will be blocked by AppArmor.\n") +
 				  i18n.tr("Would you like to download it now?");
-			Button {
+			ScriptorButton {
 				text: i18n.tr("Yes, please")
-				color: colorScriptor
 				onClicked: {
 					PopupUtils.open(downloaderComponent, null, {'autoStart': true});
 					PopupUtils.close(autoDl);
 				}
 			}
-			Button {
+			ScriptorButton {
 				text: i18n.tr("No thank you")
-				color: colorScriptor
 				onClicked: PopupUtils.close(autoDl);
 			}
 		}
@@ -105,11 +109,24 @@ MainView {
 			id: scriptPage
 			visible: false
 			onSettingsClicked: pageStack.push(settingsPage);
+			onShowProcBuffer: {
+				outputPage.procBuffer = procBuffer;
+				pageStack.push(outputPage);
+			}
 		}
 		SettingsPage {
 			id: settingsPage
 			visible: false
 			onSettingsFinished: pageStack.pop();
+		}
+		Output {
+			id: outputPage
+			visible: false
+			onSettingsClicked: pageStack.push(settingsPage);
+		}
+		onDepthChanged: {
+			if (depth === 0)
+				pageStack.push(scriptPage)
 		}
 	}
 
@@ -139,13 +156,12 @@ MainView {
 	}
 	Component {
 		id: firstRunComponent
-		FirstRun {}
+		FirstRun {
+			contentWidth: mainView.width - units.gu(10)
+			contentHeight: mainView.height - units.gu(10)
+		}
 	}
 	function firstRunHelper() {
-		var opts = {
-			'contentWidth': scriptPage.width - units.gu(10),
-			'contentHeight': scriptPage.height - units.gu(10)
-		};
-		PopupUtils.open(firstRunComponent, scriptPage, opts);
+		PopupUtils.open(firstRunComponent, scriptPage, {});
 	}
 }

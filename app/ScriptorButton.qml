@@ -27,36 +27,9 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
 
-Popover {
-	contentHeight: rectFrame.height
-	contentWidth: rectFrame.width
-	property alias text: messageText.text
-
-	/* frame */
-	Rectangle {
-		id: rectFrame
-		color: colorZ1
-		height: rectBg.height + 2
-		width: rectBg.width + 2
-	}
-
-	/* bg */
-	Rectangle {
-		id: rectBg
-		color: colorZ0
-		height: messageText.height + 2
-		width: messageText.width + 2
-		x: 1
-		y: 1
-
-		LabelArea {
-			id: messageText
-			horizontalAlignment: Text.AlignHCenter
-			verticalAlignment: Text.AlignVCenter
-			color: colorZ1
-			font.pixelSize: units.gu(3)
-		}
-	}
+Button {
+	width: units.gu(8)
+	height: units.gu(8)
+	color: pressed ? colorScriptorPressed : colorScriptor
 }

@@ -58,7 +58,7 @@ PageHeader {
 		text: i18n.tr("Scriptor")
 		font.pixelSize: height * 2 / 3
 	}
-	Button {
+	ScriptorButton {
 		id: btnOptions
 		anchors {
 			top: parent.top
@@ -66,7 +66,6 @@ PageHeader {
 			bottom: parent.bottom
 		}
 		width: height
-		color: colorScriptor
 		iconName: "settings"
 	}
 }

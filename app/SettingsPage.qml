@@ -50,11 +50,78 @@ Page {
 		}
 		Column {
 			width: root.width
-			Button {
-				width: parent.width
-				height: units.gu(8)
+			spacing: units.gu(1)
+			Item {
+				width: root.width
+				height: chkProcDisplay.height
+				CheckBox {
+					id: chkProcDisplay
+					anchors {
+						left: parent.left
+						margins: units.gu(1)
+					}
+					height: units.gu(8)
+					width: units.gu(8)
+
+					onCheckedChanged: usageSettings.isProcDisplay = checked
+				}
+				Binding {
+					target: chkProcDisplay
+					property: "checked"
+					value: usageSettings.isProcDisplay
+				}
+				LabelForm {
+					text: i18n.tr("Show command output every time it is used")
+					anchors {
+						top: chkProcDisplay.top
+						bottom: chkProcDisplay.bottom
+						left: chkProcDisplay.right
+						right: parent.right
+						margins: units.gu(1)
+					}
+					verticalAlignment: Text.AlignVCenter
+					font.pixelSize: height * 2 / 3
+				}
+			}
+			Item {
+				width: root.width
+				height: chkDarkTheme.height
+				CheckBox {
+					id: chkDarkTheme
+					anchors {
+						left: parent.left
+						margins: units.gu(1)
+					}
+					height: units.gu(8)
+					width: units.gu(8)
+
+					onCheckedChanged: windowSettings.useDarkTheme = checked
+				}
+				Binding {
+					target: chkDarkTheme
+					property: "checked"
+					value: windowSettings.useDarkTheme
+				}
+				LabelForm {
+					text: i18n.tr("Use dark theme")
+					anchors {
+						top: chkDarkTheme.top
+						bottom: chkDarkTheme.bottom
+						left: chkDarkTheme.right
+						right: parent.right
+						margins: units.gu(1)
+					}
+					verticalAlignment: Text.AlignVCenter
+					font.pixelSize: height * 2 / 3
+				}
+			}
+			ScriptorButton {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: units.gu(1)
+				}
 				text: i18n.tr("Download Busybox")
-				color: colorScriptor
 				onClicked: {
 					PopupUtils.open(downloaderComponent);
 					settingsFinished();
