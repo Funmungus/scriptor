@@ -107,11 +107,8 @@ Page {
 
 			model: 7
 			delegate: Component {
-				Button {
-					height: units.gu(8)
-					width: units.gu(8)
+				ScriptorButton {
 					onClicked: root.toolFunctions[index]()
-					color: colorScriptor
 					iconName: root.toolIconNames[index]
 				}
 			}

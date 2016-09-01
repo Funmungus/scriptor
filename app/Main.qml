@@ -72,6 +72,7 @@ MainView {
 	property string colorZ0: windowSettings.useDarkTheme ? "black" : "white"
 	property string colorZ1: windowSettings.useDarkTheme ? "white" : "black"
 	readonly property string colorScriptor: "#4747ff"
+	readonly property string colorScriptorPressed: "#ff0000"
 
 	Component {
 		id: downloaderComponent
@@ -85,17 +86,15 @@ MainView {
 			text: i18n.tr("Busybox is not found at ") + binBusybox + "\n" +
 				  i18n.tr("If you installed this app from the Ubuntu store, then all other commands will be blocked by AppArmor.\n") +
 				  i18n.tr("Would you like to download it now?");
-			Button {
+			ScriptorButton {
 				text: i18n.tr("Yes, please")
-				color: colorScriptor
 				onClicked: {
 					PopupUtils.open(downloaderComponent, null, {'autoStart': true});
 					PopupUtils.close(autoDl);
 				}
 			}
-			Button {
+			ScriptorButton {
 				text: i18n.tr("No thank you")
-				color: colorScriptor
 				onClicked: PopupUtils.close(autoDl);
 			}
 		}

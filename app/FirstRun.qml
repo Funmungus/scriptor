@@ -83,10 +83,9 @@ Popover {
 			}
 			Row {
 				width: parent.width
-				Button {
+				ScriptorButton {
 					width: units.gu(6)
 					height: width
-					color: colorScriptor
 					iconName: "help"
 				}
 				LabelForm {
@@ -100,10 +99,9 @@ Popover {
 			}
 			Row {
 				width: parent.width
-				Button {
+				ScriptorButton {
 					width: units.gu(6)
 					height: width
-					color: colorScriptor
 					iconName: "settings"
 				}
 				LabelForm {
@@ -117,10 +115,9 @@ Popover {
 			}
 			Row {
 				width: parent.width
-				Button {
+				ScriptorButton {
 					width: units.gu(6)
 					height: width
-					color: colorScriptor
 					iconName: "media-playback-start"
 				}
 				LabelForm {

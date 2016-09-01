@@ -28,44 +28,8 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-PageHeader {
-	visible: !UbuntuApplication.inputMethod.visible
-	property alias icon: icon
-	property alias lblTitle: lblTitle
-	property alias btnOptions: btnOptions
-	Icon {
-		id: icon
-		source: Qt.resolvedUrl("qrc:/graphics/Scriptor.png")
-		anchors.horizontalCenter: parent.horizontalCenter
-		height: parent.height
-		width: height
-	}
-	LabelForm {
-		visible: icon.visible
-		anchors {
-			left: icon.right
-			verticalCenter: parent.verticalCenter
-		}
-		text: i18n.tr("-gooey")
-	}
-	LabelForm {
-		id: lblTitle
-		anchors {
-			left: parent.left
-			leftMargin: units.gu(5)
-		}
-		height: parent.height
-		text: i18n.tr("Scriptor")
-		font.pixelSize: height * 2 / 3
-	}
-	ScriptorButton {
-		id: btnOptions
-		anchors {
-			top: parent.top
-			right: parent.right
-			bottom: parent.bottom
-		}
-		width: height
-		iconName: "settings"
-	}
+Button {
+	width: units.gu(8)
+	height: units.gu(8)
+	color: pressed ? colorScriptorPressed : colorScriptor
 }
