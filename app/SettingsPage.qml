@@ -50,7 +50,7 @@ Page {
 		}
 		Column {
 			width: root.width
-			spacing: units.gu(1)
+			spacing: 1
 			Item {
 				width: root.width
 				height: chkProcDisplay.height
@@ -58,7 +58,7 @@ Page {
 					id: chkProcDisplay
 					anchors {
 						left: parent.left
-						margins: units.gu(1)
+						margins: 1
 					}
 					height: units.gu(8)
 					width: units.gu(8)
@@ -77,7 +77,7 @@ Page {
 						bottom: chkProcDisplay.bottom
 						left: chkProcDisplay.right
 						right: parent.right
-						margins: units.gu(1)
+						margins: 1
 					}
 					verticalAlignment: Text.AlignVCenter
 					font.pixelSize: height * 2 / 3

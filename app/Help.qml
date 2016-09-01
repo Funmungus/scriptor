@@ -37,7 +37,6 @@ Popover {
 		height: contentHeight
 		width: contentWidth
 	}
-
 	/* bg */
 	Rectangle {
 		id: rectBg
@@ -45,7 +44,6 @@ Popover {
 		anchors.fill: rectFrame
 		anchors.margins: 1
 	}
-
 	/* Content */
 	ListView {
 		id: listView
@@ -60,37 +58,21 @@ Popover {
 				verticalAlignment: Text.AlignVCenter
 				color: colorZ1
 				font.pixelSize: units.gu(5)
-				text: i18n.tr("Welcome to Scriptor!\n");
-			}
-			LabelArea {
-				width: listView.width
-				height: units.gu(35)
-				horizontalAlignment: Text.AlignHCenter
-				color: colorZ1
-				font.pixelSize: units.gu(3)
-				text: i18n.tr("If this was installed from the Ubuntu store, it is suggested to download Busybox in the next dialogue.  " +
-							  "At any time the download dialogue can be opened from the settings page to install or update Busybox.  " +
-							  "It will be installed to the confined bin directory, explained below.  " +
-							  "To use it, start any command with `busybox`.\n" +
-							  "Here are some hints to get started:\n\n") +
-					  utils.dataDir() + " - " +
-					  i18n.tr("The starting working directory of commands.\n") +
-					  utils.dataDir() + "/bin - " +
-					  i18n.tr("The confined bin directory.  Any executable here can be used in commands without a full path.")
+				text: i18n.tr("Quick Help\n");
 			}
 			Loader {
 				width: listView.width
 				height: units.gu(6)
-				sourceComponent: btnRowComponent
+				sourceComponent: btnHelpComponent
 				onLoaded: {
-					item.iconName = "help";
-					item.text = " - " + i18n.tr("Show quick help");
+					item.iconName = "media-playback-start";
+					item.text = " - " + i18n.tr("Execute command, changing icon not yet implemented");
 				}
 			}
 			Loader {
 				width: listView.width
 				height: units.gu(6)
-				sourceComponent: btnRowComponent
+				sourceComponent: btnHelpComponent
 				onLoaded: {
 					item.iconName = "settings";
 					item.text = " - " + i18n.tr("Settings page");
@@ -99,28 +81,91 @@ Popover {
 			Loader {
 				width: listView.width
 				height: units.gu(6)
-				sourceComponent: btnRowComponent
+				sourceComponent: btnHelpComponent
 				onLoaded: {
-					item.iconName = "media-playback-start";
-					item.text = " - " + i18n.tr("Execute command, icon may be changed with the browse button");
+					item.iconName = "add";
+					item.text = " - " + i18n.tr("Add one new script after selection, or to the end of the list");
+				}
+			}
+			Loader {
+				width: listView.width
+				height: units.gu(6)
+				sourceComponent: btnHelpComponent
+				onLoaded: {
+					item.iconName = "remove";
+					item.text = " - " + i18n.tr("Remove selected items");
+				}
+			}
+			Loader {
+				width: listView.width
+				height: units.gu(6)
+				sourceComponent: btnHelpComponent
+				onLoaded: {
+					item.iconName = "reset";
+					item.text = " - " + i18n.tr("Load scripts that have been saved");
+				}
+			}
+			Loader {
+				width: listView.width
+				height: units.gu(6)
+				sourceComponent: btnHelpComponent
+				onLoaded: {
+					item.iconName = "save";
+					item.text = " - " + i18n.tr("Save all scripts");
+				}
+			}
+			Loader {
+				width: listView.width
+				height: units.gu(6)
+				sourceComponent: btnHelpComponent
+				onLoaded: {
+					item.iconName = "up";
+					item.text = " - " + i18n.tr("Move up, not yet implemented");
+				}
+			}
+			Loader {
+				width: listView.width
+				height: units.gu(6)
+				sourceComponent: btnHelpComponent
+				onLoaded: {
+					item.iconName = "down";
+					item.text = " - " + i18n.tr("Move down, not yet implemented");
+				}
+			}
+			Loader {
+				width: listView.width
+				height: units.gu(6)
+				sourceComponent: btnHelpComponent
+				onLoaded: {
+					item.iconName = "insert-image";
+					item.text = " - " + i18n.tr("Browse, not yet implemented");
+				}
+			}
+			Loader {
+				width: listView.width
+				height: units.gu(6)
+				sourceComponent: btnHelpComponent
+				onLoaded: {
+					item.iconName = "note";
+					item.text = " - " + i18n.tr("View command output");
 				}
 			}
 		}
 	}
 	Component {
-		id: btnRowComponent
+		id: btnHelpComponent
 		Item {
 			anchors.fill: parent
 
 			property alias iconName: btn.iconName
-			property alias text: label.text
+			property alias text: lbl.text
 			ScriptorButton {
 				id: btn
 				width: units.gu(6)
 				height: width
 			}
 			LabelForm {
-				id: label
+				id: lbl
 				anchors {
 					left: btn.right
 					right: parent.right

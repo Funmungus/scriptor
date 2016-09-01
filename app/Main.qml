@@ -156,13 +156,12 @@ MainView {
 	}
 	Component {
 		id: firstRunComponent
-		FirstRun {}
+		FirstRun {
+			contentWidth: mainView.width - units.gu(10)
+			contentHeight: mainView.height - units.gu(10)
+		}
 	}
 	function firstRunHelper() {
-		var opts = {
-			'contentWidth': scriptPage.width - units.gu(10),
-			'contentHeight': scriptPage.height - units.gu(10)
-		};
-		PopupUtils.open(firstRunComponent, scriptPage, opts);
+		PopupUtils.open(firstRunComponent, scriptPage, {});
 	}
 }

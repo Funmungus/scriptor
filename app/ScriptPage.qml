@@ -67,11 +67,11 @@ Page {
 			id: procListView
 			orientation: ListView.Vertical
 			flickableDirection: Flickable.VerticalFlick
-			spacing: units.gu(1)
+			spacing: 1
 			anchors {
 				top: chkSelectAll.bottom
 				bottom: parent.bottom
-				margins: units.gu(1)
+				margins: 1
 			}
 			width: parent.width
 			Connections {
@@ -99,9 +99,9 @@ Page {
 			id: toolBarListView
 			orientation: ListView.Horizontal
 			flickableDirection: Flickable.HorizontalFlick
-			spacing: units.gu(1)
+			spacing: 1
 			anchors.top: parent.top
-			anchors.margins: units.gu(1)
+			anchors.margins: 1
 			height: units.gu(8)
 			width: parent.width
 
@@ -119,7 +119,7 @@ Page {
 			anchors {
 				top: toolBarListView.bottom
 				left: parent.left
-				margins: units.gu(1)
+				margins: 1
 			}
 			height: units.gu(8)
 			width: units.gu(8)
@@ -140,7 +140,7 @@ Page {
 				bottom: chkSelectAll.bottom
 				left: chkSelectAll.right
 				right: parent.right
-				margins: units.gu(1)
+				margins: 1
 			}
 			verticalAlignment: Text.AlignVCenter
 			font.pixelSize: height * 2 / 3
@@ -282,6 +282,13 @@ Page {
 	}
 
 	function openHelp() {
-		Pops.showMessage(root, i18n.tr("Help menu not yet implemented"));
+		PopupUtils.open(helpComponent, root, {});
+	}
+	Component {
+		id: helpComponent
+		Help {
+			contentHeight: root.height - units.gu(10)
+			contentWidth: root.width - units.gu(10)
+		}
 	}
 }
