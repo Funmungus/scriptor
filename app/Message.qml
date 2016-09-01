@@ -38,18 +38,18 @@ Popover {
 	Rectangle {
 		id: rectFrame
 		color: colorZ1
-		height: rectBg.height + units.gu(2)
-		width: rectBg.width + units.gu(2)
+		height: rectBg.height + 2
+		width: rectBg.width + 2
 	}
 
 	/* bg */
 	Rectangle {
 		id: rectBg
 		color: colorZ0
-		height: messageText.height + units.gu(2)
-		width: messageText.width + units.gu(2)
-		x: units.gu(1)
-		y: units.gu(1)
+		height: messageText.height + 2
+		width: messageText.width + 2
+		x: 1
+		y: 1
 
 		LabelArea {
 			id: messageText

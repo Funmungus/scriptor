@@ -62,7 +62,7 @@ Page {
 				id: rectArea
 				color: colorZ0
 				anchors.fill: parent
-				anchors.margins: units.gu(1)
+				anchors.margins: 1
 				CheckBox {
 					id: chkOut
 					anchors {

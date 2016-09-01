@@ -42,18 +42,18 @@ Popover {
 	Rectangle {
 		id: rectBg
 		color: colorZ0
-		width: contentWidth - units.gu(2)
-		height: contentHeight - units.gu(2)
-		x: units.gu(1)
-		y: units.gu(1)
+		width: contentWidth - 2
+		height: contentHeight - 2
+		x: 1
+		y: 1
 	}
 
 	/* Content */
 	ScrollView {
 		width: contentWidth - units.gu(3)
 		height: contentHeight - units.gu(3)
-		x: units.gu(2)
-		y: units.gu(2)
+		x: 2
+		y: 2
 		Column {
 			width: contentWidth - units.gu(3)
 			LabelForm {
