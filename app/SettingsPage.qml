@@ -50,7 +50,7 @@ Page {
 		}
 		Column {
 			width: root.width
-			spacing: 1
+			spacing: units.gu(1)
 			Item {
 				width: root.width
 				height: chkProcDisplay.height
@@ -58,7 +58,7 @@ Page {
 					id: chkProcDisplay
 					anchors {
 						left: parent.left
-						margins: 1
+						margins: units.gu(1)
 					}
 					height: units.gu(8)
 					width: units.gu(8)
@@ -77,7 +77,7 @@ Page {
 						bottom: chkProcDisplay.bottom
 						left: chkProcDisplay.right
 						right: parent.right
-						margins: 1
+						margins: units.gu(1)
 					}
 					verticalAlignment: Text.AlignVCenter
 					font.pixelSize: height * 2 / 3
@@ -116,7 +116,11 @@ Page {
 				}
 			}
 			ScriptorButton {
-				width: parent.width
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: units.gu(1)
+				}
 				text: i18n.tr("Download Busybox")
 				onClicked: {
 					PopupUtils.open(downloaderComponent);

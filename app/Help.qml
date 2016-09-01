@@ -48,8 +48,8 @@ Popover {
 	ListView {
 		id: listView
 		anchors.fill: rectBg
-		anchors.margins: 1
-		spacing: 1
+		anchors.margins: units.gu(1)
+		spacing: units.gu(1)
 		model: VisualItemModel {
 			LabelForm {
 				width: listView.width

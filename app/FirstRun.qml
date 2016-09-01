@@ -51,9 +51,10 @@ Popover {
 		id: listView
 		anchors.fill: rectBg
 		anchors.margins: 1
-		spacing: 1
+		spacing: units.gu(1)
 		model: VisualItemModel {
 			LabelForm {
+				id: txtWelcome
 				width: listView.width
 				height: units.gu(8)
 				horizontalAlignment: Text.AlignHCenter
@@ -63,7 +64,12 @@ Popover {
 				text: i18n.tr("Welcome to Scriptor!\n");
 			}
 			LabelArea {
-				width: listView.width
+				anchors {
+					left: txtWelcome.left
+					right: txtWelcome.right
+					leftMargin: units.gu(1)
+					rightMargin: units.gu(1)
+				}
 				height: units.gu(35)
 				horizontalAlignment: Text.AlignHCenter
 				color: colorZ1
@@ -79,7 +85,12 @@ Popover {
 					  i18n.tr("The confined bin directory.  Any executable here can be used in commands without a full path.")
 			}
 			Loader {
-				width: listView.width
+				anchors {
+					left: txtWelcome.left
+					right: txtWelcome.right
+					leftMargin: units.gu(1)
+					rightMargin: units.gu(1)
+				}
 				height: units.gu(6)
 				sourceComponent: btnRowComponent
 				onLoaded: {
@@ -88,7 +99,12 @@ Popover {
 				}
 			}
 			Loader {
-				width: listView.width
+				anchors {
+					left: txtWelcome.left
+					right: txtWelcome.right
+					leftMargin: units.gu(1)
+					rightMargin: units.gu(1)
+				}
 				height: units.gu(6)
 				sourceComponent: btnRowComponent
 				onLoaded: {
@@ -97,7 +113,12 @@ Popover {
 				}
 			}
 			Loader {
-				width: listView.width
+				anchors {
+					left: txtWelcome.left
+					right: txtWelcome.right
+					leftMargin: units.gu(1)
+					rightMargin: units.gu(1)
+				}
 				height: units.gu(6)
 				sourceComponent: btnRowComponent
 				onLoaded: {

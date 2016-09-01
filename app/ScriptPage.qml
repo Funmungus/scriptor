@@ -67,11 +67,11 @@ Page {
 			id: procListView
 			orientation: ListView.Vertical
 			flickableDirection: Flickable.VerticalFlick
-			spacing: 1
+			spacing: units.gu(1)
 			anchors {
 				top: chkSelectAll.bottom
 				bottom: parent.bottom
-				margins: 1
+				margins: units.gu(1)
 			}
 			width: parent.width
 			Connections {
@@ -89,23 +89,40 @@ Page {
 			model: procList.length
 			delegate: Component {
 				ProcessListItem {
-					width: parent.width;
+					anchors {
+						left: parent.left
+						right: parent.right
+						margins: units.gu(1)
+					}
 					onShowProcBuffer: root.showProcBuffer(procBuffer);
 				}
 			}
+		}
+
+		/* Cover up list items that scroll up */
+		Rectangle {
+			anchors {
+				top: parent.top
+				bottom: procListView.top
+			}
+			width: parent.width
+			color: colorZ0
 		}
 
 		ListView {
 			id: toolBarListView
 			orientation: ListView.Horizontal
 			flickableDirection: Flickable.HorizontalFlick
-			spacing: 1
-			anchors.top: parent.top
-			anchors.margins: 1
+			spacing: units.gu(1)
+			anchors {
+				top: parent.top
+				left: parent.left
+				right: parent.right
+				margins: units.gu(1)
+			}
 			height: units.gu(8)
-			width: parent.width
 
-			model: 7
+			model: root.toolFunctions.length
 			delegate: Component {
 				ScriptorButton {
 					onClicked: root.toolFunctions[index]()
@@ -119,7 +136,7 @@ Page {
 			anchors {
 				top: toolBarListView.bottom
 				left: parent.left
-				margins: 1
+				margins: units.gu(1)
 			}
 			height: units.gu(8)
 			width: units.gu(8)
@@ -140,7 +157,7 @@ Page {
 				bottom: chkSelectAll.bottom
 				left: chkSelectAll.right
 				right: parent.right
-				margins: 1
+				margins: units.gu(1)
 			}
 			verticalAlignment: Text.AlignVCenter
 			font.pixelSize: height * 2 / 3
