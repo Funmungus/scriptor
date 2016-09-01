@@ -123,6 +123,10 @@ MainView {
 			visible: false
 			onSettingsClicked: pageStack.push(settingsPage);
 		}
+		onDepthChanged: {
+			if (depth === 0)
+				pageStack.push(scriptPage)
+		}
 	}
 
 	IconFileDialog {
