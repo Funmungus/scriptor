@@ -83,11 +83,45 @@ Page {
 					font.pixelSize: height * 2 / 3
 				}
 			}
-			Button {
-				width: parent.width
-				height: units.gu(8)
+			Item {
+				width: root.width
+				height: chkDarkTheme.height
+				CheckBox {
+					id: chkDarkTheme
+					anchors {
+						left: parent.left
+						margins: units.gu(1)
+					}
+					height: units.gu(8)
+					width: units.gu(8)
+
+					onCheckedChanged: windowSettings.useDarkTheme = checked
+				}
+				Binding {
+					target: chkDarkTheme
+					property: "checked"
+					value: windowSettings.useDarkTheme
+				}
+				LabelForm {
+					text: i18n.tr("Use dark theme")
+					anchors {
+						top: chkDarkTheme.top
+						bottom: chkDarkTheme.bottom
+						left: chkDarkTheme.right
+						right: parent.right
+						margins: units.gu(1)
+					}
+					verticalAlignment: Text.AlignVCenter
+					font.pixelSize: height * 2 / 3
+				}
+			}
+			ScriptorButton {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: units.gu(1)
+				}
 				text: i18n.tr("Download Busybox")
-				color: colorScriptor
 				onClicked: {
 					PopupUtils.open(downloaderComponent);
 					settingsFinished();

@@ -62,12 +62,13 @@ Page {
 				id: rectArea
 				color: colorZ0
 				anchors.fill: parent
-				anchors.margins: units.gu(1)
+				anchors.margins: 1
 				CheckBox {
 					id: chkOut
 					anchors {
 						top: parent.top
 						left: parent.left
+						margins: units.gu(1)
 					}
 					height: units.gu(5)
 					width: units.gu(5)
@@ -90,6 +91,7 @@ Page {
 						top: chkOut.top
 						left: chkOut.right
 						right: parent.right
+						margins: units.gu(1)
 					}
 					height: chkOut.height
 					text: i18n.tr("Show Standard Output")
@@ -101,6 +103,7 @@ Page {
 					anchors {
 						top: chkOut.bottom
 						left: parent.left
+						margins: units.gu(1)
 					}
 					height: units.gu(5)
 					width: units.gu(5)
@@ -124,6 +127,7 @@ Page {
 						top: chkErr.top
 						left: chkErr.right
 						right: parent.right
+						margins: units.gu(1)
 					}
 					height: chkErr.height
 					text: i18n.tr("Show Standard Error")
@@ -138,6 +142,7 @@ Page {
 						left: parent.left
 						bottom: parent.bottom
 						right: parent.right
+						margins: units.gu(1)
 					}
 					color: colorZ1
 					font.pixelSize: units.gu(3)

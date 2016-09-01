@@ -57,13 +57,12 @@ Item {
 		height: parent.height
 	}
 
-	Button {
+	ScriptorButton {
 		id: btnStart
 		anchors.left: chkSelected.right
 		height: parent.height
 		width: height
 		iconName: "media-playback-start"
-		color: colorZ0
 		onClicked: {
 			if (usageSettings.isProcDisplay)
 				showProcBuffer(procBuffer);
@@ -76,12 +75,11 @@ Item {
 			}
 		}
 	}
-	Button {
+	ScriptorButton {
 		id: btnIcon
 		anchors.left: btnStart.right
 		width: units.gu(5)
 		height: parent.height
-		color: colorScriptor
 		iconName: "insert-image"
 	}
 	TextField {
@@ -109,12 +107,11 @@ Item {
 		wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 		mouseSelectionMode: TextEdit.SelectCharacters
 	}
-	Button {
+	ScriptorButton {
 		id: btnView
 		anchors.right: parent.right
 		width: units.gu(5)
 		height: parent.height
-		color: colorScriptor
 		iconName: "note"
 		onClicked: showProcBuffer(procBuffer)
 	}

@@ -89,10 +89,24 @@ Page {
 			model: procList.length
 			delegate: Component {
 				ProcessListItem {
-					width: parent.width;
+					anchors {
+						left: parent.left
+						right: parent.right
+						margins: units.gu(1)
+					}
 					onShowProcBuffer: root.showProcBuffer(procBuffer);
 				}
 			}
+		}
+
+		/* Cover up list items that scroll up */
+		Rectangle {
+			anchors {
+				top: parent.top
+				bottom: procListView.top
+			}
+			width: parent.width
+			color: colorZ0
 		}
 
 		ListView {
@@ -100,18 +114,18 @@ Page {
 			orientation: ListView.Horizontal
 			flickableDirection: Flickable.HorizontalFlick
 			spacing: units.gu(1)
-			anchors.top: parent.top
-			anchors.margins: units.gu(1)
+			anchors {
+				top: parent.top
+				left: parent.left
+				right: parent.right
+				margins: units.gu(1)
+			}
 			height: units.gu(8)
-			width: parent.width
 
-			model: 7
+			model: root.toolFunctions.length
 			delegate: Component {
-				Button {
-					height: units.gu(8)
-					width: units.gu(8)
+				ScriptorButton {
 					onClicked: root.toolFunctions[index]()
-					color: colorScriptor
 					iconName: root.toolIconNames[index]
 				}
 			}
@@ -285,6 +299,13 @@ Page {
 	}
 
 	function openHelp() {
-		Pops.showMessage(root, i18n.tr("Help menu not yet implemented"));
+		PopupUtils.open(helpComponent, root, {});
+	}
+	Component {
+		id: helpComponent
+		Help {
+			contentHeight: root.height - units.gu(10)
+			contentWidth: root.width - units.gu(10)
+		}
 	}
 }
