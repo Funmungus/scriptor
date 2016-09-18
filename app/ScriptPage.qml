@@ -74,17 +74,6 @@ Page {
 				margins: units.gu(1)
 			}
 			width: parent.width
-			Connections {
-				target: UbuntuApplication.inputMethod
-				onVisibleChanged: {
-					if (UbuntuApplication.inputMethod.visible) {
-						if (lastFocus > 0 && lastFocus < procListView.model) {
-							procListView.currentIndex = -1;
-							procListView.currentIndex = lastFocus;
-						}
-					}
-				}
-			}
 
 			model: procList.length
 			delegate: Component {
