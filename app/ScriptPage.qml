@@ -41,7 +41,6 @@ Page {
 	property var toolFunctions: [addProc, removeProc,
 		loadList, saveList, moveUp, moveDown, openHelp]
 	property var procList: [];
-	property int lastFocus: -1;
 
 	signal settingsClicked
 	signal showProcBuffer(var procBuffer)
@@ -275,11 +274,11 @@ Page {
 	}
 
 	function moveUp() {
-		Pops.showMessage(toolBarListView, i18n.tr("move up not yet implemented"));
+		/* Move up, bubble starting from last */
 	}
 
 	function moveDown() {
-		Pops.showMessage(toolBarListView, i18n.tr("move down not yet implemented"));
+		/* Move down, bubble starting from first */
 	}
 
 	function refreshModel() {

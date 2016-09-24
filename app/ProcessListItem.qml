@@ -45,16 +45,6 @@ ProcessItem {
 	editName.onTextChanged: procList[index].name = editName.text ? editName.text : ""
 	editCmd.onTextChanged: procList[index].command = editCmd.text ? editCmd.text : ""
 
-	// Allow scrolling to view when keyboard is shown
-	editName.onActiveFocusChanged: setLastFocus(editName.activeFocus);
-	editCmd.onActiveFocusChanged: setLastFocus(editCmd.activeFocus);
-
-        function setLastFocus(isFocused) {
-		if (isFocused) {
-			lastFocus = index;
-		}
-	}
-
 	Component.onCompleted: {
 		refreshIcon();
 	}
