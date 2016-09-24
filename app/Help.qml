@@ -60,8 +60,9 @@ Popover {
 				font.pixelSize: units.gu(5)
 				text: i18n.tr("Quick Help\n");
 			}
-			LabelForm {
+			LabelArea {
 				width: listView.width
+				height: units.gu(12)
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 				color: colorZ1
@@ -69,8 +70,9 @@ Popover {
 				text: utils.dataDir() + " - " +
 					  i18n.tr("The starting working directory of commands.")
 			}
-			LabelForm {
+			LabelArea {
 				width: listView.width
+				height: units.gu(12)
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 				color: colorZ1
@@ -138,7 +140,7 @@ Popover {
 				sourceComponent: btnHelpComponent
 				onLoaded: {
 					item.iconName = "up";
-					item.text = " - " + i18n.tr("Move up, not yet implemented");
+					item.text = " - " + i18n.tr("Move up");
 				}
 			}
 			Loader {
@@ -147,7 +149,7 @@ Popover {
 				sourceComponent: btnHelpComponent
 				onLoaded: {
 					item.iconName = "down";
-					item.text = " - " + i18n.tr("Move down, not yet implemented");
+					item.text = " - " + i18n.tr("Move down");
 				}
 			}
 			Loader {
