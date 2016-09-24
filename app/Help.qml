@@ -60,6 +60,24 @@ Popover {
 				font.pixelSize: units.gu(5)
 				text: i18n.tr("Quick Help\n");
 			}
+			LabelForm {
+				width: listView.width
+				horizontalAlignment: Text.AlignHCenter
+				verticalAlignment: Text.AlignVCenter
+				color: colorZ1
+				font.pixelSize: units.gu(3)
+				text: utils.dataDir() + " - " +
+					  i18n.tr("The starting working directory of commands.")
+			}
+			LabelForm {
+				width: listView.width
+				horizontalAlignment: Text.AlignHCenter
+				verticalAlignment: Text.AlignVCenter
+				color: colorZ1
+				font.pixelSize: units.gu(3)
+				text: utils.dataDir() + "/bin - " +
+					  i18n.tr("The confined bin directory.  Any executable here can be used in commands without a full path.")
+			}
 			Loader {
 				width: listView.width
 				height: units.gu(6)
