@@ -19,3 +19,21 @@ Makefile
 *.user
 *.pot
 __pycache__
+
+# CMake cache files
+CMakeCache.txt
+CMakeFiles/
+*/CMakeFiles/
+*/cmake_install.cmake
+*/__/
+cmake_install.cmake
+install_manifest.txt
+#po/Scriptor.desktop.in.h
+
+# Build files
+# backend/Scriptor/
+# *_automoc.cpp
+# app/Scriptor.desktop
+# manifest.json
+# moc_*
+# qrc_*

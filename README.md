@@ -12,13 +12,14 @@ Save a list of scripts and executables, and execute with a tap.
 
 ## Building source
 
-Scriptor can also build and run using QtCreator.  The following are
+Scriptor can also build and run using QtCreator.  The following
 instructions are to build a multi-platform package from the
 command line.  Given version number <ver>, the final package will be
 scriptor.newparadigmsoftware_<ver>_multi.click.
 
 Required command line tools to build with helper scripts:
-click, click-buddy, sed, grep, dpkg, adb
+click, click-buddy, sed, grep, dpkg
+adb is required for the install script.
 
 To build a confined package, execute build_multi.sh from the source directory.
 To build an unconfined package, execute openstore.sh.

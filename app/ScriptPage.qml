@@ -41,7 +41,6 @@ Page {
 	property var toolFunctions: [addProc, removeProc,
 		loadList, saveList, moveUp, moveDown, openHelp]
 	property var procList: [];
-	property int lastFocus: -1;
 
 	signal settingsClicked
 	signal showProcBuffer(var procBuffer)
@@ -74,17 +73,6 @@ Page {
 				margins: units.gu(1)
 			}
 			width: parent.width
-			Connections {
-				target: UbuntuApplication.inputMethod
-				onVisibleChanged: {
-					if (UbuntuApplication.inputMethod.visible) {
-						if (lastFocus > 0 && lastFocus < procListView.model) {
-							procListView.currentIndex = -1;
-							procListView.currentIndex = lastFocus;
-						}
-					}
-				}
-			}
 
 			model: procList.length
 			delegate: Component {
@@ -286,11 +274,55 @@ Page {
 	}
 
 	function moveUp() {
-		Pops.showMessage(toolBarListView, i18n.tr("move up not yet implemented"));
+		if (procList.length <= 1)
+			return;
+		/* Move down, bubble starting from first */
+		procListView.model = 0;
+		/* First selected items cannot move */
+		var curItem;
+		var i = 1;
+		if (procList[0].selected) {
+			while (i < procList.length && procList[i].selected) {
+				++i;
+			}
+		}
+		while (i < procList.length) {
+			if (procList[i].selected) {
+				curItem = procList[i];
+				/* remove current */
+				procList.splice(i, 1);
+				/* place before previous */
+				procList.splice(i - 1, 0, curItem);
+			}
+			++i;
+		}
+		procListView.model = procList.length;
 	}
 
 	function moveDown() {
-		Pops.showMessage(toolBarListView, i18n.tr("move down not yet implemented"));
+		if (procList.length <= 1)
+			return;
+		/* Move up, bubble starting from last */
+		procListView.model = 0;
+		var curItem;
+		/* Last selected items cannot move */
+		var i = procList.length - 2;
+		if (procList[procList.length - 1].selected) {
+			while (i >= 0 && procList[i].selected) {
+				--i;
+			}
+		}
+		while (i >= 0) {
+			if (procList[i].selected) {
+				curItem = procList[i];
+				/* remove current */
+				procList.splice(i, 1);
+				/* place after next */
+				procList.splice(i + 1, 0, curItem);
+			}
+			--i;
+		}
+		procListView.model = procList.length;
 	}
 
 	function refreshModel() {
