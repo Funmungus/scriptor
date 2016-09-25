@@ -24,7 +24,7 @@ fi
 echo "
 Extracting click packages in temporary directory $tmpdir...
 "
-if [ -f $tmpdir ]; then
+if [ -a $tmpdir ]; then
   rm -r $tmpdir/*
 fi
 mkdir -p $tmpdir
