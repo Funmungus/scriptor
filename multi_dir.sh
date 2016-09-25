@@ -5,6 +5,7 @@ if [ "x$localVersion" = "x" ]; then
   echo "Error: Not able to build multi package" >&2
   exit 1
 fi
+tmpdir=/tmp/scriptor.newparadigmsoftware
 clickbase="scriptor.newparadigmsoftware_${localVersion}_"
 armclick="${clickbase}armhf.click"
 i386click="${clickbase}i386.click"
@@ -21,15 +22,22 @@ $amd64click" >&2
 fi
 
 echo "
-Extracting click packages...
+Extracting click packages in temporary directory $tmpdir...
 "
-rm -r armhf i386 amd64 multi
-dpkg -x "$armclick" armhf
-dpkg -x "$i386click" i386
-dpkg -x "$amd64click" amd64
-cp -r armhf multi
-cp -r i386/lib/* multi/lib/
-cp -r amd64/lib/* multi/lib/
+if [ -a $tmpdir ]; then
+  rm -r $tmpdir/*
+fi
+mkdir -p $tmpdir
+if [ $? -ne 0 ];then
+  echo "Error: Unable to create temporary directory $tmpdir" >&2
+  exit 1
+fi
+dpkg -x "$armclick" $tmpdir/armhf
+dpkg -x "$i386click" $tmpdir/i386
+dpkg -x "$amd64click" $tmpdir/amd64
+cp -r $tmpdir/armhf $tmpdir/multi
+cp -r $tmpdir/i386/lib/* $tmpdir/multi/lib/
+cp -r $tmpdir/amd64/lib/* $tmpdir/multi/lib/
 
 # In click manifest replace specific architecture with multi architecture
-sed 's/^\s*"architecture":.*/"architecture": ["armhf", "i386", "amd64"],/g' manifest.json > multi/manifest.json
+sed 's/^\s*"architecture":.*/"architecture": ["armhf", "i386", "amd64"],/g' manifest.json > $tmpdir/multi/manifest.json

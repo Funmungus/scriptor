@@ -60,6 +60,26 @@ Popover {
 				font.pixelSize: units.gu(5)
 				text: i18n.tr("Quick Help\n");
 			}
+			LabelArea {
+				width: listView.width
+				height: units.gu(12)
+				horizontalAlignment: Text.AlignHCenter
+				verticalAlignment: Text.AlignVCenter
+				color: colorZ1
+				font.pixelSize: units.gu(3)
+				text: utils.dataDir() + " - " +
+					  i18n.tr("The starting working directory of commands.")
+			}
+			LabelArea {
+				width: listView.width
+				height: units.gu(12)
+				horizontalAlignment: Text.AlignHCenter
+				verticalAlignment: Text.AlignVCenter
+				color: colorZ1
+				font.pixelSize: units.gu(3)
+				text: utils.dataDir() + "/bin - " +
+					  i18n.tr("The confined bin directory.  Any executable here can be used in commands without a full path.")
+			}
 			Loader {
 				width: listView.width
 				height: units.gu(6)
@@ -120,7 +140,7 @@ Popover {
 				sourceComponent: btnHelpComponent
 				onLoaded: {
 					item.iconName = "up";
-					item.text = " - " + i18n.tr("Move up, not yet implemented");
+					item.text = " - " + i18n.tr("Move up");
 				}
 			}
 			Loader {
@@ -129,7 +149,7 @@ Popover {
 				sourceComponent: btnHelpComponent
 				onLoaded: {
 					item.iconName = "down";
-					item.text = " - " + i18n.tr("Move down, not yet implemented");
+					item.text = " - " + i18n.tr("Move down");
 				}
 			}
 			Loader {
