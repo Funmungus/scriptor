@@ -1,12 +1,11 @@
 echo "
 Building click packages...
 "
+# git clean will remove .gitignore files only, will not remove manifest or clicks
+git clean -Xdf
 click-buddy --dir . --framework ubuntu-sdk-15.04 --arch armhf
-rm $(find . -name CMakeCache.txt) $(find . -name Makefile)
-rm -r CMakeFiles/
+git clean -Xdf
 click-buddy --dir . --framework ubuntu-sdk-15.04 --arch amd64
-rm $(find . -name CMakeCache.txt) $(find . -name Makefile)
-rm -r CMakeFiles/
+git clean -Xdf
 click-buddy --dir . --framework ubuntu-sdk-15.04 --arch i386
-rm $(find . -name CMakeCache.txt) $(find . -name Makefile)
-rm -r CMakeFiles/
+git clean -Xdf
