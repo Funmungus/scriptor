@@ -33,16 +33,32 @@
 class Process : public QProcess
 {
 	Q_OBJECT
+	/*! \brief Executable context of process */
+	Q_PROPERTY(QString shell READ shell WRITE setShell NOTIFY shellChanged)
+	/*! \brief Executable argument for command to run in context.
+	 * "-c" for bash and busybox sh */
+	Q_PROPERTY(QString shellArg READ shellArg WRITE setShellArg NOTIFY shellArgChanged)
 public:
 	explicit Process(QObject *parent = 0);
 	~Process();
+	QString shell() const
+	{
+		return _shell;
+	}
+	void setShell(const QString &sh);
+
+	QString shellArg() const
+	{
+		return _shellArg;
+	}
+	void setShellArg(const QString &arg);
 
 	Q_INVOKABLE QString readAllStandardOutput();
 	Q_INVOKABLE QString readAllStandardError();
-	Q_INVOKABLE void start(const QString &command)
-	{
-		QProcess::start(command);
-	}
+	Q_INVOKABLE void start(const QString &command);
+//	{
+//		QProcess::start(command);
+//	}
 	Q_INVOKABLE QString workingDirectory() const
 	{
 		return QProcess::workingDirectory();
@@ -65,11 +81,19 @@ public:
 	}
 
 signals:
+	void shellChanged(const QString &val) const;
+	void shellArgChanged(const QString &val) const;
 	void error(const QString &error) const;
+
 public slots:
 	void raise(int errorNumber) const;
+
 private slots:
 	void onError(QProcess::ProcessError);
+
+private:
+	QString _shell;
+	QString _shellArg;
 };
 
 #endif // PROCESS_H
