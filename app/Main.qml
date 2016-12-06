@@ -67,6 +67,8 @@ MainView {
 		property bool showStdErr: true
 		property bool isProcDisplay: false
 		property string iconFolder: picturesLocation
+		property string shell: "/bin/bash"
+		property string shellArg: "-c"
 	}
 
 	property string colorZ0: windowSettings.useDarkTheme ?

@@ -36,7 +36,6 @@ import "popups.js" as Pops
 
 Page {
 	id: root
-	readonly property string binBusybox: utils.dataDir() + "/bin/busybox";
 	property var toolIconNames: ["add", "remove", "reset", "save", "up", "down", "help"]
 	property var toolFunctions: [addProc, removeProc,
 		loadList, saveList, moveUp, moveDown, openHelp]
@@ -66,7 +65,7 @@ Page {
 			id: procListView
 			orientation: ListView.Vertical
 			flickableDirection: Flickable.VerticalFlick
-			spacing: units.gu(1)
+			spacing: units.gu(2)
 			anchors {
 				top: chkSelectAll.bottom
 				bottom: parent.bottom
@@ -108,7 +107,7 @@ Page {
 				right: parent.right
 				margins: units.gu(1)
 			}
-			height: units.gu(8)
+			height: units.gu(5)
 
 			model: root.toolFunctions.length
 			delegate: Component {
@@ -126,8 +125,8 @@ Page {
 				left: parent.left
 				margins: units.gu(1)
 			}
-			height: units.gu(8)
-			width: units.gu(8)
+			height: units.gu(5)
+			width: units.gu(5)
 
 			onCheckedChanged: {
 				var bSel = chkSelectAll.checked;
@@ -206,12 +205,7 @@ Page {
 	}
 
 	function emptyProc() {
-		if (utils.fileExists(binBusybox))
-			return {selected:false, name:"",
-				command:"busybox sh -c \"busybox \"", icon:""};
-		else
-			return {selected:false, name:"",
-				command:"bash -c \"\"", icon:""};
+		return {selected:false, name:"", command:"", icon:""};
 	}
 
 	function makeProc(strN, strC, strI) {

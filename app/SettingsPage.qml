@@ -50,7 +50,7 @@ Page {
 		}
 		Column {
 			width: root.width
-			spacing: units.gu(1)
+			spacing: units.gu(2)
 			Item {
 				width: root.width
 				height: chkProcDisplay.height
@@ -60,8 +60,8 @@ Page {
 						left: parent.left
 						margins: units.gu(1)
 					}
-					height: units.gu(8)
-					width: units.gu(8)
+					height: units.gu(5)
+					width: units.gu(5)
 
 					onCheckedChanged: usageSettings.isProcDisplay = checked
 				}
@@ -71,7 +71,7 @@ Page {
 					value: usageSettings.isProcDisplay
 				}
 				LabelForm {
-					text: i18n.tr("Show command output every time it is used")
+					text: i18n.tr("Show command output for every execute")
 					anchors {
 						top: chkProcDisplay.top
 						bottom: chkProcDisplay.bottom
@@ -92,8 +92,8 @@ Page {
 						left: parent.left
 						margins: units.gu(1)
 					}
-					height: units.gu(8)
-					width: units.gu(8)
+					height: units.gu(5)
+					width: units.gu(5)
 
 					onCheckedChanged: windowSettings.useDarkTheme = checked
 				}
@@ -113,6 +113,58 @@ Page {
 					}
 					verticalAlignment: Text.AlignVCenter
 					font.pixelSize: height * 2 / 3
+				}
+			}
+			Item {
+				width: root.width
+				height: units.gu(5)
+				LabelForm {
+					id: lblShell
+					anchors {
+						left: parent.left
+						margins: units.gu(1)
+						verticalCenter: parent.verticalCenter
+					}
+					height: units.gu(5)
+					font.pixelSize: height * 2 / 3
+					text: i18n.tr("Command shell(/bin/bash): ");
+				}
+				TextField {
+					id: editShell
+					anchors {
+						left: lblShell.right
+						right: parent.right
+					}
+					height: units.gu(5)
+					font.pixelSize: height * 2 / 3
+					text: usageSettings.shell
+					onTextChanged: usageSettings.shell = text
+				}
+			}
+			Item {
+				width: root.width
+				height: units.gu(5)
+				LabelForm {
+					id: lblShellArg
+					anchors {
+						left: parent.left
+						margins: units.gu(1)
+						verticalCenter: parent.verticalCenter
+					}
+					height: units.gu(5)
+					font.pixelSize: height * 2 / 3
+					text: i18n.tr("Shell command argument(-c): ");
+				}
+				TextField {
+					id: editShellArg
+					anchors {
+						left: lblShellArg.right
+						right: parent.right
+					}
+					height: units.gu(5)
+					font.pixelSize: height * 2 / 3
+					text: usageSettings.shellArg
+					onTextChanged: usageSettings.shellArg = text;
 				}
 			}
 			ScriptorButton {
