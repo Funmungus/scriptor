@@ -26,19 +26,36 @@
 */
 
 #include "process.h"
+#include <QRegularExpression>
 #include <cstdlib>
 
 #define STR_HELPER(x) #x
 #define STRINGIFY(x) STR_HELPER(x)
 
 Process::Process(QObject *parent) :
-	QProcess(parent)
+	QProcess(parent), _shell("/bin/bash"), _shellArg("-c")
 {
 	connect(this, SIGNAL(error(QProcess::ProcessError)), SLOT(onError(QProcess::ProcessError)));
 }
 
 Process::~Process()
 {
+}
+
+void Process::setShell(const QString &sh)
+{
+	if (sh != _shell) {
+		_shell = sh;
+		emit shellChanged(_shell);
+	}
+}
+
+void Process::setShellArg(const QString &arg)
+{
+	if (arg != _shellArg) {
+		_shellArg = arg;
+		emit shellArgChanged(_shellArg);
+	}
 }
 
 QString Process::readAllStandardOutput()
@@ -51,6 +68,24 @@ QString Process::readAllStandardError()
 {
 	QByteArray arr = QProcess::readAllStandardError();
 	return QString(arr);
+}
+
+void Process::start(const QString &command)
+{
+	/* No shell context, entire command is the given command */
+	if (_shell.isEmpty() || _shell.isNull()) {
+		QProcess::start(command);
+	}
+	/* Execute in shell.  Include shell arg before our command */
+	else {
+		QStringList args;
+		/* shell arg if available */
+		if (!_shellArg.isEmpty() && !_shellArg.isNull()) {
+			args = _shellArg.split(QRegularExpression("\\s"));
+		}
+		args.append(command);
+		QProcess::start(_shell, args);
+	}
 }
 
 void Process::raise(int errorNumber) const

@@ -42,13 +42,15 @@ void BackendPlugin::registerTypes(const char *uri)
 	QString path = getenv("PATH");
 	QString binDir = Utils::dataDir() + "/bin";
 	QDir dirBinDir(binDir);
+	std::string strPath;
 	if (!dirBinDir.exists() && !dirBinDir.mkpath("."))
 		qCritical() << "Not able to create directory " << binDir;
 	if (path.isEmpty() || path.isNull())
 		path = binDir;
 	else
 		path.prepend(binDir + ":");
-	if (setenv("PATH", path.toStdString().c_str(), 1) < 0) {
+	strPath = path.toStdString();
+	if (setenv("PATH", strPath.c_str(), 1) < 0) {
 		qCritical() << "Unable to set PATH to find busybox\n";
 	}
 

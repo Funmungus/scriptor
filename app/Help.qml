@@ -44,156 +44,71 @@ Popover {
 		anchors.fill: rectFrame
 		anchors.margins: 1
 	}
-	/* Content */
-	ListView {
-		id: listView
-		anchors.fill: rectBg
-		anchors.margins: units.gu(1)
-		spacing: units.gu(1)
-		model: VisualItemModel {
-			LabelForm {
-				width: listView.width
-				height: units.gu(8)
-				horizontalAlignment: Text.AlignHCenter
-				verticalAlignment: Text.AlignVCenter
-				color: colorZ1
-				font.pixelSize: units.gu(5)
-				text: i18n.tr("Quick Help\n");
-			}
-			LabelArea {
-				width: listView.width
-				height: units.gu(12)
-				horizontalAlignment: Text.AlignHCenter
-				verticalAlignment: Text.AlignVCenter
-				color: colorZ1
-				font.pixelSize: units.gu(3)
-				text: utils.dataDir() + " - " +
-					  i18n.tr("The starting working directory of commands.")
-			}
-			LabelArea {
-				width: listView.width
-				height: units.gu(12)
-				horizontalAlignment: Text.AlignHCenter
-				verticalAlignment: Text.AlignVCenter
-				color: colorZ1
-				font.pixelSize: units.gu(3)
-				text: utils.dataDir() + "/bin - " +
-					  i18n.tr("The confined bin directory.  Any executable here can be used in commands without a full path.")
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "media-playback-start";
-					item.text = " - " + i18n.tr("Execute command, changing icon not yet implemented");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "settings";
-					item.text = " - " + i18n.tr("Settings page");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "add";
-					item.text = " - " + i18n.tr("Add one new script after selection, or to the end of the list");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "remove";
-					item.text = " - " + i18n.tr("Remove selected items");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "reset";
-					item.text = " - " + i18n.tr("Load scripts that have been saved");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "save";
-					item.text = " - " + i18n.tr("Save all scripts");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "up";
-					item.text = " - " + i18n.tr("Move up");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "down";
-					item.text = " - " + i18n.tr("Move down");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "insert-image";
-					item.text = " - " + i18n.tr("Browse, not yet implemented");
-				}
-			}
-			Loader {
-				width: listView.width
-				height: units.gu(6)
-				sourceComponent: btnHelpComponent
-				onLoaded: {
-					item.iconName = "note";
-					item.text = " - " + i18n.tr("View command output");
-				}
-			}
-		}
-	}
-	Component {
-		id: btnHelpComponent
-		Item {
-			anchors.fill: parent
 
-			property alias iconName: btn.iconName
-			property alias text: lbl.text
-			ScriptorButton {
-				id: btn
-				width: units.gu(6)
-				height: width
+	property var btnIcons: ["media-playback-start", "settings",
+		"add", "remove", "reset", "save", "up", "down",
+		"insert-image", "note"];
+
+	property var btnLabels: [i18n.tr("Execute command, changing icon not yet implemented"),
+		i18n.tr("Settings page"),
+		i18n.tr("Add one new script after selection, or to the end of the list"),
+		i18n.tr("Remove selected items"),
+		i18n.tr("Load scripts that have been saved"),
+		i18n.tr("Save all scripts"),
+		i18n.tr("Move up"),
+		i18n.tr("Move down"),
+		i18n.tr("Browse, not yet implemented"),
+		i18n.tr("View command output")]
+
+	/* Content */
+	ScrollView {
+		id: scrollView
+		anchors.fill: rectBg
+		anchors.margins: units.gu(2)
+		Column {
+			id: column
+			width: scrollView.width
+			spacing: units.gu(0.5)
+			LabelForm {
+				width: scrollView.width
+				horizontalAlignment: Text.AlignHCenter
+				text: i18n.tr("Quick Help\n");
+				font.pixelSize: FontUtils.sizeToPixels(windowSettings.h1)
 			}
 			LabelForm {
-				id: lbl
-				anchors {
-					left: btn.right
-					right: parent.right
+				width: scrollView.width
+				text: utils.dataDir() + " - " +
+					  i18n.tr("The starting working directory of commands.\n")
+			}
+			LabelForm {
+				width: scrollView.width
+				text: utils.dataDir() + "/bin - " +
+					  i18n.tr("The confined bin directory.  Any executable here can be used in commands without a full path.\n")
+			}
+			Repeater {
+				width: column.width
+				model: btnIcons.length
+				Item {
+					width: column.width
+					height: btn.height > label.height ? btn.height : label.height
+					ScriptorButton {
+						id: btn
+						anchors {
+							left: parent.left
+							verticalCenter: parent.verticalCenter
+						}
+						iconName: btnIcons[index]
+					}
+					LabelForm {
+						id: label
+						anchors {
+							left: btn.right
+							right: parent.right
+							verticalCenter: parent.verticalCenter
+						}
+						text: " - " + btnLabels[index]
+					}
 				}
-				height: btn.height
-				verticalAlignment: Text.AlignVCenter
-				color: colorZ1
-				font.pixelSize: units.gu(3)
 			}
 		}
 	}

@@ -35,11 +35,8 @@ Dialog {
 	id: dialogue
 	title: i18n.tr("Download File")
 	text: i18n.tr("Download Binary: Download and copy to bin folder ") +
-		  utils.dataDir() + "/bin\n" +
-		  i18n.tr("Download: Only download to ") + dlDir;
-	readonly property string dlDir: utils.env("HOME") +
-									"/.local/share/ubuntu-download-manager/" +
-									applicationName + "/Downloads";
+		  utils.dataDir() + "/bin\n\n" +
+		  i18n.tr("Download: Only download to ") + Utils.dataDir + "/bin/";
 	readonly property var busyboxArchMap: {
 		'armhf': 'armv7l',
 		'i386': 'i686',
@@ -47,57 +44,86 @@ Dialog {
 		'amd64': 'x86_64'
 	};
 	property bool autoStart: false
+	property var single: null
+	property bool downloading: single ? single.downloading : false
 
-	TextField {
+	TextForm {
 		id: txtUrl
 		text: busyboxUrl()
 		placeholderText: i18n.tr("Download URL")
-		enabled: !single.downloading
+		enabled: !downloading
 	}
 	ProgressBar {
+		id: progressBar
+		height: windowSettings.unitWidth
 		minimumValue: 0
 		maximumValue: 100
-		value: single.progress
-		SingleDownload {
-			id: single
+		value: 0
+		DownloadManager {
+			id: manager
+			autoStart: true
+			cleanDownloads: true
 			property bool copyBin: false
-		}
-
-		Connections {
-			target: single
-			onDownloadingChanged: {
-				txtStatus.text += "downloading = " + single.downloading + "\n";
+			onDownloadCanceled: {
+				txtStatus.text = i18n.tr("Canceled");
+				progressBar.progress = 0;
 			}
-			onProgressChanged: {
-				txtStatus.text = single.progress + "%\n";
-				if (single.progress !== 100)
-					return;
-				if (single.copyBin) {
-					var loc = txtUrl.text;
-					var i = loc.lastIndexOf("/");
+			onDownloadFinished: {
+				if (copyBin) {
+					var file;
+					var i = path.lastIndexOf("/");
 					if (i >= 0)
-						loc = loc.substring(i + 1, loc.length);
-					var fromFile = dlDir + "/" + loc;
-					var toFile = utils.dataDir() + "/bin/";
-					if (loc.substring(0, 7) === "busybox")
-						toFile += "busybox";
+						file = path.substring(i + 1, path.length);
 					else
-						toFile += loc;
-					if (utils.copyFile(fromFile, toFile)) {
+						file = path;
+					var toFile = utils.dataDir() + "/bin/";
+					/* Error no file */
+					if (!utils.fileExists(path)) {
+						txtStatus.text = i18n.tr("Error no file");
+						return;
+					}
+					if (file.substring(0, 7) === "busybox") {
+						/* Congratulations, you have a busybox! */
+						usageSettings.shell = binBusybox;
+						usageSettings.shellArg = "sh -c";
+						toFile += "busybox";
+					} else {
+						/* Different binary, do not modify name */
+						toFile += file;
+					}
+					if (utils.copyFile(path, toFile)) {
 						utils.setPermissions(toFile, utils.binPermissions());
 						txtStatus.text = i18n.tr("Download file and copy to bin directory complete!\n");
 						txtStatus.text += i18n.tr("Executable is available at ") + toFile + "\n";
 					} else {
-						txtStatus.text = i18n.tr("Unable to copy file ") + fromFile +
+						txtStatus.text = i18n.tr("Unable to copy file ") + path +
 								i18n.tr(" to ") + toFile + "\n";
 						return;
 					}
 				} else {
-					txtStatus.text = i18n.tr("Download complete!");
+					txtStatus.text = i18n.tr("Download complete!\nFile: ") + path;
 				}
-				if (autoStart)
-					PopupUtils.close(dialogue);
 				btnCancel.text = i18n.tr("Finish");
+				if (dialogue.autoStart)
+					PopupUtils.close(dialogue);
+				progressBar.progress = 100;
+			}
+//			onDownloadCanceledPaused: {}
+			onDownloadResumed: {
+				single = download;
+				download.allowMobileDownload = true;
+				txtStatus.text = i18n.tr("Downloading: ") + download.progress + "%\n";
+				btnCancel.text = i18n.tr("Cancel");
+			}
+		}
+
+		Connections {
+			target: single
+			onProgressChanged: {
+				/* At 100 download finish will set completed status */
+				if (single.progress !== 100)
+					txtStatus.text = i18n.tr("Downloading: ") + single.progress + "%\n";
+				progressBar.value = single.progress;
 			}
 		}
 	}
@@ -105,45 +131,42 @@ Dialog {
 	ScriptorButton {
 		id: btnDlBin
 		text: i18n.tr("Download Binary")
-		enabled: !single.downloading
+		enabled: !manager.downloading
 		onClicked: {
-			single.copyBin = true;
+			manager.copyBin = true;
 			btnCancel.text = i18n.tr("Cancel");
-			single.download(txtUrl.text);
+			manager.download(txtUrl.text);
 		}
 	}
 	ScriptorButton {
 		id: btnDl
 		text: i18n.tr("Download")
-		enabled: !single.downloading
+		enabled: !manager.downloading
 		onClicked: {
-			single.copyBin = false;
+			manager.copyBin = false;
 			btnCancel.text = i18n.tr("Cancel");
-			single.download(txtUrl.text);
+			manager.download(txtUrl.text);
 		}
 	}
 	ScriptorButton {
 		id: btnCancel
 		text: i18n.tr("Cancel")
 		onClicked: {
-			if (single.downloading)
-				single.cancel();
+			if (manager.downloading)
+				manager.cancel();
 			PopupUtils.close(dialogue);
 		}
 	}
-	TextArea {
+	LabelForm {
 		id: txtStatus
-		height: units.gu(40)
-		selectByMouse: true
-		readOnly: true
 	}
 
 	Component.onCompleted: {
-		if (autoStart) {
+		if (dialogue.autoStart) {
 			txtUrl.text = busyboxUrl();
-			single.copyBin = true;
+			manager.copyBin = true;
 			btnCancel.text = i18n.tr("Cancel");
-			single.download(txtUrl.text);
+			manager.download(txtUrl.text);
 		}
 	}
 

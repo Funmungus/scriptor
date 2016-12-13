@@ -46,26 +46,25 @@ PageHeader {
 			left: icon.right
 			verticalCenter: parent.verticalCenter
 		}
-		text: i18n.tr("-gooey")
+		text: i18n.tr("-gooey!")
 	}
 	LabelForm {
 		id: lblTitle
 		anchors {
 			left: parent.left
 			leftMargin: units.gu(5)
+			verticalCenter: parent.verticalCenter
 		}
-		height: parent.height
 		text: i18n.tr("Scriptor")
-		font.pixelSize: height * 2 / 3
+		font.pixelSize: FontUtils.sizeToPixels(windowSettings.h1)
 	}
 	ScriptorButton {
 		id: btnOptions
 		anchors {
-			top: parent.top
 			right: parent.right
-			bottom: parent.bottom
+			margins: units.gu(1)
+			verticalCenter: parent.verticalCenter
 		}
-		width: height
 		iconName: "settings"
 	}
 }

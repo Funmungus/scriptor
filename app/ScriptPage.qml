@@ -36,7 +36,6 @@ import "popups.js" as Pops
 
 Page {
 	id: root
-	readonly property string binBusybox: utils.dataDir() + "/bin/busybox";
 	property var toolIconNames: ["add", "remove", "reset", "save", "up", "down", "help"]
 	property var toolFunctions: [addProc, removeProc,
 		loadList, saveList, moveUp, moveDown, openHelp]
@@ -60,55 +59,21 @@ Page {
 			bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
 		}
 		width: parent.width
-
 		color: colorZ0
-		ListView {
-			id: procListView
-			orientation: ListView.Vertical
-			flickableDirection: Flickable.VerticalFlick
-			spacing: units.gu(1)
-			anchors {
-				top: chkSelectAll.bottom
-				bottom: parent.bottom
-				margins: units.gu(1)
-			}
-			width: parent.width
-
-			model: procList.length
-			delegate: Component {
-				ProcessListItem {
-					anchors {
-						left: parent.left
-						right: parent.right
-						margins: units.gu(1)
-					}
-					onShowProcBuffer: root.showProcBuffer(procBuffer);
-				}
-			}
-		}
-
-		/* Cover up list items that scroll up */
-		Rectangle {
-			anchors {
-				top: parent.top
-				bottom: procListView.top
-			}
-			width: parent.width
-			color: colorZ0
-		}
 
 		ListView {
 			id: toolBarListView
-			orientation: ListView.Horizontal
-			flickableDirection: Flickable.HorizontalFlick
-			spacing: units.gu(1)
 			anchors {
 				top: parent.top
 				left: parent.left
 				right: parent.right
 				margins: units.gu(1)
 			}
-			height: units.gu(8)
+			orientation: ListView.Horizontal
+			flickableDirection: Flickable.HorizontalFlick
+			spacing: units.gu(1)
+			height: windowSettings.unitWidth
+			clip: true
 
 			model: root.toolFunctions.length
 			delegate: Component {
@@ -126,8 +91,8 @@ Page {
 				left: parent.left
 				margins: units.gu(1)
 			}
-			height: units.gu(8)
-			width: units.gu(8)
+			width: windowSettings.unitWidth
+			height: width
 
 			onCheckedChanged: {
 				var bSel = chkSelectAll.checked;
@@ -139,16 +104,38 @@ Page {
 			}
 		}
 		LabelForm {
-			text: i18n.tr("Select All")
 			anchors {
-				top: chkSelectAll.top
-				bottom: chkSelectAll.bottom
+				verticalCenter: chkSelectAll.verticalCenter
 				left: chkSelectAll.right
 				right: parent.right
 				margins: units.gu(1)
 			}
-			verticalAlignment: Text.AlignVCenter
-			font.pixelSize: height * 2 / 3
+			text: i18n.tr("Select All")
+		}
+		ListView {
+			id: procListView
+			orientation: ListView.Vertical
+			flickableDirection: Flickable.VerticalFlick
+			spacing: units.gu(2)
+			anchors {
+				top: chkSelectAll.bottom
+				bottom: parent.bottom
+				margins: units.gu(1)
+			}
+			width: parent.width
+			clip: true
+
+			model: procList.length
+			delegate: Component {
+				ProcessListItem {
+					anchors {
+						left: parent.left
+						right: parent.right
+						margins: units.gu(1)
+					}
+					onShowProcBuffer: root.showProcBuffer(procBuffer);
+				}
+			}
 		}
 	}
 
@@ -206,12 +193,7 @@ Page {
 	}
 
 	function emptyProc() {
-		if (utils.fileExists(binBusybox))
-			return {selected:false, name:"",
-				command:"busybox sh -c \"busybox \"", icon:""};
-		else
-			return {selected:false, name:"",
-				command:"bash -c \"\"", icon:""};
+		return {selected:false, name:"", command:"", icon:""};
 	}
 
 	function makeProc(strN, strC, strI) {
