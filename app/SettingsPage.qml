@@ -39,6 +39,21 @@ Page {
 	readonly property int margins: units.gu(1)
 	property var fontSizes: ["xx-small", "x-small", "small",
 		"medium", "large", "x-large"]
+	property int fontIndex: 0
+	property int headerFontIndex: 0
+	Component.onCompleted: {
+		for (var i = 0; i < fontSizes.length; i++) {
+			if (windowSettings.fontSize === fontSizes[i]) {
+				fontIndex = i;
+				cmbFontSize.text = fontSizes[i];
+			}
+			if (windowSettings.h1 === fontSizes[i]) {
+				headerFontIndex = i;
+				cmbHeaderFontSize.text = fontSizes[i];
+			}
+		}
+	}
+
 	Component {
 		id: downloaderComponent
 		DownloadDialog {}
@@ -135,6 +150,7 @@ Page {
 						leftMargin: margins
 						right: parent.right
 					}
+					font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
 					text: usageSettings.shell
 					onTextChanged: usageSettings.shell = text
 				}
@@ -161,10 +177,156 @@ Page {
 						leftMargin: margins
 						right: parent.right
 					}
+					font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
 					text: usageSettings.shellArg
 					onTextChanged: usageSettings.shellArg = text;
 				}
 			}
+			LabelForm {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				horizontalAlignment: Text.AlignHCenter
+				text: i18n.tr("Font size:")
+			}
+			ComboButton {
+				id: cmbFontSize
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				onClicked: expanded = !expanded;
+				// @disable-check M17
+				font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
+				Column {
+					anchors {
+						left: parent.left
+						right: parent.right
+					}
+					spacing: units.gu(1)
+					Repeater {
+						width: parent.width
+						model: fontSizes.length
+						Rectangle {
+							width: parent.width
+							height: lblFontSize.height + units.gu(2)
+							color: mouseArea.pressed ?
+								       colorScriptorPressed :
+								       fontIndexColor(index)
+							LabelForm {
+								id: lblFontSize
+								anchors {
+									left: parent.left
+									right: parent.right
+									margins: units.gu(1)
+									verticalCenter: parent.verticalCenter
+								}
+								color: colorZ0
+								text: fontSizes[index]
+							}
+							MouseArea {
+								id: mouseArea
+								anchors.fill: parent
+								onClicked: {
+									fontIndex = index;
+									cmbFontSize.text =
+											fontSizes[index]
+									windowSettings.fontSize =
+											fontSizes[index];
+									cmbFontSize.expanded = false;
+								}
+							}
+						}
+					}
+				}
+			}
+			LabelForm {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				horizontalAlignment: Text.AlignHCenter
+				text: i18n.tr("Title/Header size:")
+			}
+			ComboButton {
+				id: cmbHeaderFontSize
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				onClicked: expanded = !expanded;
+				// @disable-check M17
+				font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
+				Column {
+					spacing: units.gu(1)
+					Repeater {
+						width: parent.width
+						model: fontSizes.length
+						Rectangle {
+							width: parent.width
+							height: lblHeaderFontSize.height + units.gu(2)
+							color: headerMouseArea.pressed ?
+								       colorScriptorPressed :
+								       headerFontIndexColor(index)
+							LabelForm {
+								id: lblHeaderFontSize
+								anchors {
+									left: parent.left
+									right: parent.right
+									margins: units.gu(1)
+									verticalCenter: parent.verticalCenter
+								}
+								color: colorZ0
+								text: fontSizes[index]
+							}
+							MouseArea {
+								id: headerMouseArea
+								anchors.fill: parent
+								onClicked: {
+									headerFontIndex = index;
+									cmbHeaderFontSize.text =
+											fontSizes[index]
+									windowSettings.h1 =
+											fontSizes[index];
+									cmbHeaderFontSize.expanded = false;
+								}
+							}
+						}
+					}
+				}
+			}
+			Item {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height : lblItemSize.height > editItemSize.height ?
+						 lblItemSize.height : editItemSize.height
+				LabelForm {
+					id: lblItemSize
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					text: i18n.tr("Item size base: ")
+				}
+				TextField {
+					id: editItemSize
+					anchors {
+						left: lblItemSize.right
+						leftMargin: margins
+						right: parent.right
+					}
+					inputMethodHints: Qt.ImhDigitsOnly
+					text: windowSettings.unitWidth
+					onTextChanged: windowSettings.unitWidth = Number(text)
+				}
+			}
+
 			ScriptorButton {
 				anchors {
 					left: parent.left
@@ -178,5 +340,11 @@ Page {
 				}
 			}
 		}
+	}
+	function fontIndexColor(index) {
+		return Number(index) === Number(fontIndex) ? colorScriptor : colorZ1;
+	}
+	function headerFontIndexColor(index) {
+		return Number(index) === Number(headerFontIndex) ? colorScriptor : colorZ1;
 	}
 }
