@@ -47,7 +47,7 @@ Dialog {
 	property var single: null
 	property bool downloading: single ? single.downloading : false
 
-	TextField {
+	TextForm {
 		id: txtUrl
 		text: busyboxUrl()
 		placeholderText: i18n.tr("Download URL")
@@ -55,7 +55,7 @@ Dialog {
 	}
 	ProgressBar {
 		id: progressBar
-		height: units.gu(3)
+		height: windowSettings.unitWidth
 		minimumValue: 0
 		maximumValue: 100
 		value: 0
@@ -157,11 +157,8 @@ Dialog {
 			PopupUtils.close(dialogue);
 		}
 	}
-	TextArea {
+	LabelForm {
 		id: txtStatus
-		height: units.gu(40)
-		selectByMouse: true
-		readOnly: true
 	}
 
 	Component.onCompleted: {

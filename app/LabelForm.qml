@@ -25,11 +25,10 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-TextField {
-	readOnly: true
-	selectByMouse: true
-	mouseSelectionMode: TextEdit.SelectCharacters
+Label {
+	color: colorZ1
+	wrapMode: Label.WrapAtWordBoundaryOrAnywhere
+	font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
 }

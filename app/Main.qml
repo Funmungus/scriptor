@@ -59,22 +59,26 @@ MainView {
 		property int height: units.gu(75)
 		property bool useDarkTheme: true
 		property int lastRunVersion: 0
+		property string fontSize: "medium"
+		property string h1: "large"
+		property string h2: "x-large"
+		property int unitWidth: units.gu(4.5)
 	}
 	Settings {
 		id: usageSettings
 		category: "Usage"
 		property bool showStdOut: true
 		property bool showStdErr: true
-		property bool isProcDisplay: false
+		property bool isProcDisplay: true
 		property string iconFolder: picturesLocation
 		property string shell: "/bin/bash"
 		property string shellArg: "-c"
 	}
 
 	property string colorZ0: windowSettings.useDarkTheme ?
-								 "#0f0f0f" : UbuntuColors.porcelain
+					 "#0f0f0f" : UbuntuColors.porcelain
 	property string colorZ1: windowSettings.useDarkTheme ?
-								 "white" : "black"
+					 "white" : "black"
 	readonly property string colorScriptor: "#4747ff"
 	readonly property string colorScriptorPressed: "#ff0000"
 

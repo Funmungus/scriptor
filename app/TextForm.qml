@@ -25,12 +25,13 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.4
+import QtQuick 2.0
 import Ubuntu.Components 1.3
 
 TextArea {
-	readOnly: true
-	wrapMode: Text.WordWrap
-	selectByMouse: true
+	color: colorZ1
+	height: font.pixelSize << 3
+	wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 	mouseSelectionMode: TextEdit.SelectCharacters
+	font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
 }

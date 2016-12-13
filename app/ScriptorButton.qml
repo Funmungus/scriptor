@@ -29,7 +29,9 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Button {
-	width: units.gu(8)
-	height: units.gu(8)
+	width: windowSettings.unitWidth
+	height: windowSettings.unitWidth
 	color: pressed ? colorScriptorPressed : colorScriptor
+	// @disable-check M17
+	font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
 }

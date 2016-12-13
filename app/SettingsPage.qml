@@ -36,6 +36,9 @@ Page {
 		id: pageHeader
 		btnOptions.visible: false
 	}
+	readonly property int margins: units.gu(1)
+	property var fontSizes: ["xx-small", "x-small", "small",
+		"medium", "large", "x-large"]
 	Component {
 		id: downloaderComponent
 		DownloadDialog {}
@@ -44,125 +47,120 @@ Page {
 		width: root.width
 		anchors {
 			top: UbuntuApplication.inputMethod.visible ? root.top : pageHeader.bottom
-			topMargin: units.gu(3)
+			topMargin: units.gu(2)
 			bottom: parent.bottom
 			bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
 		}
 		Column {
 			width: root.width
-			spacing: units.gu(2)
+			spacing: margins
 			Item {
-				width: root.width
-				height: chkProcDisplay.height
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height: chkProcDisplay.height > lblProcDisplay.height ?
+						chkProcDisplay.height : lblProcDisplay.height
 				CheckBox {
 					id: chkProcDisplay
-					anchors {
-						left: parent.left
-						margins: units.gu(1)
-					}
-					height: units.gu(5)
-					width: units.gu(5)
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					width: windowSettings.unitWidth
+					height: width
 
+					checked: usageSettings.isProcDisplay
 					onCheckedChanged: usageSettings.isProcDisplay = checked
 				}
-				Binding {
-					target: chkProcDisplay
-					property: "checked"
-					value: usageSettings.isProcDisplay
-				}
 				LabelForm {
-					text: i18n.tr("Show command output for every execute")
+					id: lblProcDisplay
 					anchors {
-						top: chkProcDisplay.top
-						bottom: chkProcDisplay.bottom
+						verticalCenter: parent.verticalCenter
 						left: chkProcDisplay.right
+						leftMargin: margins
 						right: parent.right
-						margins: units.gu(1)
 					}
+					text: i18n.tr("Show command output for every execute")
 					verticalAlignment: Text.AlignVCenter
-					font.pixelSize: height * 2 / 3
 				}
 			}
 			Item {
-				width: root.width
-				height: chkDarkTheme.height
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height: chkDarkTheme.height > lblDarkTheme.height ?
+						chkDarkTheme.height : lblDarkTheme.height
 				CheckBox {
 					id: chkDarkTheme
-					anchors {
-						left: parent.left
-						margins: units.gu(1)
-					}
-					height: units.gu(5)
-					width: units.gu(5)
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					width: windowSettings.unitWidth
+					height: width
 
+					checked: windowSettings.useDarkTheme
 					onCheckedChanged: windowSettings.useDarkTheme = checked
 				}
-				Binding {
-					target: chkDarkTheme
-					property: "checked"
-					value: windowSettings.useDarkTheme
-				}
 				LabelForm {
-					text: i18n.tr("Use dark theme")
+					id: lblDarkTheme
 					anchors {
-						top: chkDarkTheme.top
-						bottom: chkDarkTheme.bottom
+						verticalCenter: parent.verticalCenter
 						left: chkDarkTheme.right
+						leftMargin: margins
 						right: parent.right
-						margins: units.gu(1)
 					}
-					verticalAlignment: Text.AlignVCenter
-					font.pixelSize: height * 2 / 3
+					text: i18n.tr("Use dark theme")
 				}
 			}
 			Item {
-				width: root.width
-				height: units.gu(5)
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height: lblShell.height > editShell.height ?
+						lblShell.height : editShell.height
 				LabelForm {
 					id: lblShell
-					anchors {
-						left: parent.left
-						margins: units.gu(1)
-						verticalCenter: parent.verticalCenter
-					}
-					height: units.gu(5)
-					font.pixelSize: height * 2 / 3
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
 					text: i18n.tr("Command shell(/bin/bash): ");
 				}
 				TextField {
 					id: editShell
 					anchors {
+						verticalCenter: parent.verticalCenter
 						left: lblShell.right
+						leftMargin: margins
 						right: parent.right
 					}
-					height: units.gu(5)
-					font.pixelSize: height * 2 / 3
 					text: usageSettings.shell
 					onTextChanged: usageSettings.shell = text
 				}
 			}
 			Item {
-				width: root.width
-				height: units.gu(5)
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height: lblShellArg.height > editShellArg.height ?
+						lblShellArg.height : editShellArg.height
 				LabelForm {
 					id: lblShellArg
-					anchors {
-						left: parent.left
-						margins: units.gu(1)
-						verticalCenter: parent.verticalCenter
-					}
-					height: units.gu(5)
-					font.pixelSize: height * 2 / 3
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
 					text: i18n.tr("Shell command argument(-c): ");
 				}
 				TextField {
 					id: editShellArg
 					anchors {
+						verticalCenter: parent.verticalCenter
 						left: lblShellArg.right
+						leftMargin: margins
 						right: parent.right
 					}
-					height: units.gu(5)
-					font.pixelSize: height * 2 / 3
 					text: usageSettings.shellArg
 					onTextChanged: usageSettings.shellArg = text;
 				}
@@ -171,7 +169,7 @@ Page {
 				anchors {
 					left: parent.left
 					right: parent.right
-					margins: units.gu(1)
+					margins: margins
 				}
 				text: i18n.tr("Download Busybox")
 				onClicked: {
