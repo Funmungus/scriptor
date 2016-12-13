@@ -150,8 +150,12 @@ MainView {
 
 	function firstCheckInitialize() {
 		if (windowSettings.lastRunVersion < applicationVersion) {
-			if (!utils.fileExists(binBusybox))
+			if (utils.fileExists(binBusybox)) {
+				usageSettings.shell = binBusybox;
+				usageSettings.shellArg = "sh -c"
+			} else {
 				PopupUtils.open(autoDlComponent);
+			}
 			firstRunHelper();
 			windowSettings.lastRunVersion = applicationVersion;
 		}
