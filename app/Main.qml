@@ -37,7 +37,7 @@ MainView {
 	applicationName: "scriptor.newparadigmsoftware"
 
 	readonly property string binBusybox: utils.dataDir() + "/bin/busybox";
-	readonly property int applicationVersion: 1
+	readonly property int applicationVersion: 2
 
 	id: mainView
 	width: windowSettings.width
@@ -160,7 +160,9 @@ MainView {
 			} else {
 				PopupUtils.open(autoDlComponent);
 			}
-			firstRunHelper();
+			/* Last changed in version 1 */
+			if (windowSettings.lastRunVersion < 1)
+				firstRunHelper();
 			windowSettings.lastRunVersion = applicationVersion;
 		}
 	}
