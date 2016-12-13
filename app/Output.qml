@@ -32,7 +32,7 @@ Page {
 	property var procBuffer
 	property int bufferFlags: {
 		return usageSettings.showStdOut ? usageSettings.showStdErr ?
-											   3 : 1 :
+							  3 : 1 :
 		usageSettings.showStdErr ? 2 : 0;
 	}
 
@@ -63,15 +63,25 @@ Page {
 				color: colorZ0
 				anchors.fill: parent
 				anchors.margins: 1
+			}
+			Item {
+				id: outOption
+				anchors {
+					left: rectArea.left
+					top: rectArea.top
+					right: rectArea.right
+					margins: units.gu(2)
+				}
+				height: chkOut.height > lblOut.height ?
+						chkOut.height :
+						lblOut.height
 				CheckBox {
 					id: chkOut
-					anchors {
-						top: parent.top
-						left: parent.left
-						margins: units.gu(1)
-					}
-					height: units.gu(5)
-					width: units.gu(5)
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					width: windowSettings.unitWidth
+					height: width
+					checked: usageSettings.showStdOut
 					onCheckedChanged: {
 						usageSettings.showStdOut = checked;
 						if (checked)
@@ -81,32 +91,37 @@ Page {
 						txtArea.text = getText();
 					}
 				}
-				Binding {
-					target: chkOut
-					property: "checked"
-					value: usageSettings.showStdOut
-				}
 				LabelForm {
+					id: lblOut
 					anchors {
-						top: chkOut.top
+						verticalCenter: parent.verticalCenter
 						left: chkOut.right
 						right: parent.right
-						margins: units.gu(1)
+						leftMargin: units.gu(2)
 					}
-					height: chkOut.height
 					text: i18n.tr("Show Standard Output")
-					color: colorZ1
-					font.pixelSize: height * 2 / 3
 				}
+			}
+			Item {
+				id: errOption
+				anchors {
+					left: rectArea.left
+					top: outOption.bottom
+					right: rectArea.right
+					leftMargin: units.gu(2)
+					topMargin: units.gu(0.5)
+					rightMargin: units.gu(2)
+				}
+				height: chkErr.height > lblErr.height ?
+						chkErr.height :
+						lblErr.height
 				CheckBox {
 					id: chkErr
-					anchors {
-						top: chkOut.bottom
-						left: parent.left
-						margins: units.gu(1)
-					}
-					height: units.gu(5)
-					width: units.gu(5)
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					width: windowSettings.unitWidth
+					height: width
+					checked: usageSettings.showStdErr
 					onCheckedChanged: {
 						usageSettings.showStdErr = checked;
 						if (checked)
@@ -116,55 +131,42 @@ Page {
 						txtArea.text = getText();
 					}
 				}
-				Binding {
-					target: chkErr
-					property: "checked"
-					value: usageSettings.showStdErr
-				}
 				LabelForm {
-					id: txtErr
+					id: lblErr
 					anchors {
-						top: chkErr.top
+						verticalCenter: parent.verticalCenter
 						left: chkErr.right
 						right: parent.right
-						margins: units.gu(1)
+						leftMargin: units.gu(2)
 					}
-					height: chkErr.height
 					text: i18n.tr("Show Standard Error")
-					color: colorZ1
-					font.pixelSize: height * 2 / 3
 				}
+			}
+			LabelForm {
+				id: txtArea
+				anchors {
+					top: errOption.bottom
+					left: rectArea.left
+					bottom: rectArea.bottom
+					right: rectArea.right
+					margins: units.gu(2)
+				}
+			}
 
-				LabelArea {
-					id: txtArea
-					anchors {
-						top: chkErr.bottom
-						left: parent.left
-						bottom: parent.bottom
-						right: parent.right
-						margins: units.gu(1)
-					}
-					color: colorZ1
-					font.pixelSize: units.gu(3)
-					wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-				}
-
-				Connections {
-					target: procBuffer
-					/* When buffer is changed, first wait for it to be updated */
-					onOutBufferChanged: setTextDelay.start();
-					onErrBufferChanged: setTextDelay.start();
-				}
-				Timer {
-					id: setTextDelay
-					interval: 40
-					repeat: false
-					onTriggered: txtArea.text = getText();
-				}
+			Connections {
+				target: procBuffer
+				/* When buffer is changed, first wait for it to be updated */
+				onOutBufferChanged: setTextDelay.start();
+				onErrBufferChanged: setTextDelay.start();
+			}
+			Timer {
+				id: setTextDelay
+				interval: 40
+				repeat: false
+				onTriggered: txtArea.text = getText();
 			}
 		}
 	}
-
 
 	function getText() {
 		switch (bufferFlags) {

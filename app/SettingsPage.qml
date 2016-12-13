@@ -36,6 +36,24 @@ Page {
 		id: pageHeader
 		btnOptions.visible: false
 	}
+	readonly property int margins: units.gu(1)
+	property var fontSizes: ["xx-small", "x-small", "small",
+		"medium", "large", "x-large"]
+	property int fontIndex: 0
+	property int headerFontIndex: 0
+	Component.onCompleted: {
+		for (var i = 0; i < fontSizes.length; i++) {
+			if (windowSettings.fontSize === fontSizes[i]) {
+				fontIndex = i;
+				cmbFontSize.text = fontSizes[i];
+			}
+			if (windowSettings.h1 === fontSizes[i]) {
+				headerFontIndex = i;
+				cmbHeaderFontSize.text = fontSizes[i];
+			}
+		}
+	}
+
 	Component {
 		id: downloaderComponent
 		DownloadDialog {}
@@ -44,82 +62,276 @@ Page {
 		width: root.width
 		anchors {
 			top: UbuntuApplication.inputMethod.visible ? root.top : pageHeader.bottom
-			topMargin: units.gu(3)
+			topMargin: units.gu(2)
 			bottom: parent.bottom
 			bottomMargin: UbuntuApplication.inputMethod.keyboardRectangle.height
 		}
 		Column {
 			width: root.width
-			spacing: units.gu(1)
+			spacing: margins
 			Item {
-				width: root.width
-				height: chkProcDisplay.height
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height: chkProcDisplay.height > lblProcDisplay.height ?
+						chkProcDisplay.height : lblProcDisplay.height
 				CheckBox {
 					id: chkProcDisplay
-					anchors {
-						left: parent.left
-						margins: units.gu(1)
-					}
-					height: units.gu(8)
-					width: units.gu(8)
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					width: windowSettings.unitWidth
+					height: width
 
+					checked: usageSettings.isProcDisplay
 					onCheckedChanged: usageSettings.isProcDisplay = checked
 				}
-				Binding {
-					target: chkProcDisplay
-					property: "checked"
-					value: usageSettings.isProcDisplay
-				}
 				LabelForm {
-					text: i18n.tr("Show command output every time it is used")
+					id: lblProcDisplay
 					anchors {
-						top: chkProcDisplay.top
-						bottom: chkProcDisplay.bottom
+						verticalCenter: parent.verticalCenter
 						left: chkProcDisplay.right
+						leftMargin: margins
 						right: parent.right
-						margins: units.gu(1)
 					}
+					text: i18n.tr("Show command output for every execute")
 					verticalAlignment: Text.AlignVCenter
-					font.pixelSize: height * 2 / 3
 				}
 			}
 			Item {
-				width: root.width
-				height: chkDarkTheme.height
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height: chkDarkTheme.height > lblDarkTheme.height ?
+						chkDarkTheme.height : lblDarkTheme.height
 				CheckBox {
 					id: chkDarkTheme
-					anchors {
-						left: parent.left
-						margins: units.gu(1)
-					}
-					height: units.gu(8)
-					width: units.gu(8)
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					width: windowSettings.unitWidth
+					height: width
 
+					checked: windowSettings.useDarkTheme
 					onCheckedChanged: windowSettings.useDarkTheme = checked
 				}
-				Binding {
-					target: chkDarkTheme
-					property: "checked"
-					value: windowSettings.useDarkTheme
-				}
 				LabelForm {
-					text: i18n.tr("Use dark theme")
+					id: lblDarkTheme
 					anchors {
-						top: chkDarkTheme.top
-						bottom: chkDarkTheme.bottom
+						verticalCenter: parent.verticalCenter
 						left: chkDarkTheme.right
+						leftMargin: margins
 						right: parent.right
-						margins: units.gu(1)
 					}
-					verticalAlignment: Text.AlignVCenter
-					font.pixelSize: height * 2 / 3
+					text: i18n.tr("Use dark theme")
 				}
 			}
+			Item {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height: lblShell.height > editShell.height ?
+						lblShell.height : editShell.height
+				LabelForm {
+					id: lblShell
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					text: i18n.tr("Command shell(/bin/bash): ");
+				}
+				TextField {
+					id: editShell
+					anchors {
+						verticalCenter: parent.verticalCenter
+						left: lblShell.right
+						leftMargin: margins
+						right: parent.right
+					}
+					font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
+					text: usageSettings.shell
+					onTextChanged: usageSettings.shell = text
+				}
+			}
+			Item {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height: lblShellArg.height > editShellArg.height ?
+						lblShellArg.height : editShellArg.height
+				LabelForm {
+					id: lblShellArg
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					text: i18n.tr("Shell command argument(-c): ");
+				}
+				TextField {
+					id: editShellArg
+					anchors {
+						verticalCenter: parent.verticalCenter
+						left: lblShellArg.right
+						leftMargin: margins
+						right: parent.right
+					}
+					font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
+					text: usageSettings.shellArg
+					onTextChanged: usageSettings.shellArg = text;
+				}
+			}
+			LabelForm {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				horizontalAlignment: Text.AlignHCenter
+				text: i18n.tr("Font size:")
+			}
+			ComboButton {
+				id: cmbFontSize
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				onClicked: expanded = !expanded;
+				// @disable-check M17
+				font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
+				Column {
+					anchors {
+						left: parent.left
+						right: parent.right
+					}
+					spacing: units.gu(1)
+					Repeater {
+						width: parent.width
+						model: fontSizes.length
+						Rectangle {
+							width: parent.width
+							height: lblFontSize.height + units.gu(2)
+							color: mouseArea.pressed ?
+								       colorScriptorPressed :
+								       fontIndexColor(index)
+							LabelForm {
+								id: lblFontSize
+								anchors {
+									left: parent.left
+									right: parent.right
+									margins: units.gu(1)
+									verticalCenter: parent.verticalCenter
+								}
+								color: colorZ0
+								text: fontSizes[index]
+							}
+							MouseArea {
+								id: mouseArea
+								anchors.fill: parent
+								onClicked: {
+									fontIndex = index;
+									cmbFontSize.text =
+											fontSizes[index]
+									windowSettings.fontSize =
+											fontSizes[index];
+									cmbFontSize.expanded = false;
+								}
+							}
+						}
+					}
+				}
+			}
+			LabelForm {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				horizontalAlignment: Text.AlignHCenter
+				text: i18n.tr("Title/Header size:")
+			}
+			ComboButton {
+				id: cmbHeaderFontSize
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				onClicked: expanded = !expanded;
+				// @disable-check M17
+				font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
+				Column {
+					spacing: units.gu(1)
+					Repeater {
+						width: parent.width
+						model: fontSizes.length
+						Rectangle {
+							width: parent.width
+							height: lblHeaderFontSize.height + units.gu(2)
+							color: headerMouseArea.pressed ?
+								       colorScriptorPressed :
+								       headerFontIndexColor(index)
+							LabelForm {
+								id: lblHeaderFontSize
+								anchors {
+									left: parent.left
+									right: parent.right
+									margins: units.gu(1)
+									verticalCenter: parent.verticalCenter
+								}
+								color: colorZ0
+								text: fontSizes[index]
+							}
+							MouseArea {
+								id: headerMouseArea
+								anchors.fill: parent
+								onClicked: {
+									headerFontIndex = index;
+									cmbHeaderFontSize.text =
+											fontSizes[index]
+									windowSettings.h1 =
+											fontSizes[index];
+									cmbHeaderFontSize.expanded = false;
+								}
+							}
+						}
+					}
+				}
+			}
+			Item {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				height : lblItemSize.height > editItemSize.height ?
+						 lblItemSize.height : editItemSize.height
+				LabelForm {
+					id: lblItemSize
+					anchors.left: parent.left
+					anchors.verticalCenter: parent.verticalCenter
+					text: i18n.tr("Item size base: ")
+				}
+				TextField {
+					id: editItemSize
+					anchors {
+						left: lblItemSize.right
+						leftMargin: margins
+						right: parent.right
+					}
+					inputMethodHints: Qt.ImhDigitsOnly
+					text: windowSettings.unitWidth
+					onTextChanged: windowSettings.unitWidth = Number(text)
+				}
+			}
+
 			ScriptorButton {
 				anchors {
 					left: parent.left
 					right: parent.right
-					margins: units.gu(1)
+					margins: margins
 				}
 				text: i18n.tr("Download Busybox")
 				onClicked: {
@@ -128,5 +340,11 @@ Page {
 				}
 			}
 		}
+	}
+	function fontIndexColor(index) {
+		return Number(index) === Number(fontIndex) ? colorScriptor : colorZ1;
+	}
+	function headerFontIndexColor(index) {
+		return Number(index) === Number(headerFontIndex) ? colorScriptor : colorZ1;
 	}
 }

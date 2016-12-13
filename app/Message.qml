@@ -46,17 +46,17 @@ Popover {
 	Rectangle {
 		id: rectBg
 		color: colorZ0
-		height: messageText.height + 2
-		width: messageText.width + 2
+		height: messageText.height + units.gu(4)
+		width: messageText.width + units.gu(4)
 		x: 1
 		y: 1
 
-		LabelArea {
+		LabelForm {
 			id: messageText
+			anchors.verticalCenter: parent.verticalCenter
+			anchors.horizontalCenter: parent.horizontalCenter
 			horizontalAlignment: Text.AlignHCenter
 			verticalAlignment: Text.AlignVCenter
-			color: colorZ1
-			font.pixelSize: units.gu(3)
 		}
 	}
 }

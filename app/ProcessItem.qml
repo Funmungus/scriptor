@@ -38,10 +38,10 @@ Item {
 	property alias btnIcon: btnIcon
 	property alias editName: editName
 	property alias editCmd: editCmd
-	property bool isExpanded: false
 
-	height: isExpanded ? units.gu(28) : units.gu(14)
+	height: editColumn.height
 
+	property int margins: units.gu(0.5)
 	signal showProcBuffer(var procBuffer)
 	ProcessBuffer {
 		id: procBuffer
@@ -53,15 +53,18 @@ Item {
 	CheckBox {
 		id: chkSelected
 		anchors.left: parent.left
-		width: units.gu(5)
+		/* Left of screen, margin already in effect */
+//		anchors.margins: margins
+		width: windowSettings.unitWidth
 		height: parent.height
 	}
 
 	ScriptorButton {
 		id: btnStart
 		anchors.left: chkSelected.right
-		height: parent.height
-		width: height
+		anchors.margins: margins
+		width: windowSettings.unitWidth << 1
+		height: width
 		iconName: "media-playback-start"
 		onClicked: {
 			if (usageSettings.isProcDisplay)
@@ -77,40 +80,42 @@ Item {
 	}
 	ScriptorButton {
 		id: btnIcon
-		anchors.left: btnStart.right
-		width: units.gu(5)
-		height: parent.height
+		anchors.left: btnStart.left
+		anchors.top: btnStart.bottom
+		anchors.topMargin: margins
+		width: btnStart.width
+		height: windowSettings.unitWidth
 		iconName: "insert-image"
 	}
-	TextField {
-		id: editName
+	Column {
+		id: editColumn
 		anchors {
-			left: btnIcon.right
+			left: btnStart.right
 			top: parent.top
 			right: btnView.left
+			leftMargin: margins
+			rightMargin: margins
 		}
-		height: units.gu(5)
-		placeholderText: i18n.tr("Name")
-		font.pixelSize: height * 2 / 3
-		mouseSelectionMode: TextEdit.SelectCharacters
-	}
-	TextArea {
-		id: editCmd
-		anchors {
-			right: editName.right
-			top: editName.bottom
-			left: editName.left
-			bottom: parent.bottom
+		spacing: margins
+		TextField {
+			id: editName
+			width: parent.width
+			height: font.pixelSize << 1
+			placeholderText: i18n.tr("Name")
+			color: colorZ1
+			mouseSelectionMode: TextEdit.SelectCharacters
+			font.pixelSize: FontUtils.sizeToPixels(windowSettings.fontSize)
 		}
-		font.pixelSize: units.gu(3)
-		placeholderText: i18n.tr("Command")
-		wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-		mouseSelectionMode: TextEdit.SelectCharacters
+		TextForm {
+			id: editCmd
+			width: parent.width
+			placeholderText: i18n.tr("Command")
+		}
 	}
 	ScriptorButton {
 		id: btnView
 		anchors.right: parent.right
-		width: units.gu(5)
+		width: windowSettings.unitWidth
 		height: parent.height
 		iconName: "note"
 		onClicked: showProcBuffer(procBuffer)

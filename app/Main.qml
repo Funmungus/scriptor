@@ -37,7 +37,7 @@ MainView {
 	applicationName: "scriptor.newparadigmsoftware"
 
 	readonly property string binBusybox: utils.dataDir() + "/bin/busybox";
-	readonly property int applicationVersion: 1
+	readonly property int applicationVersion: 2
 
 	id: mainView
 	width: windowSettings.width
@@ -59,20 +59,26 @@ MainView {
 		property int height: units.gu(75)
 		property bool useDarkTheme: true
 		property int lastRunVersion: 0
+		property string fontSize: "medium"
+		property string h1: "large"
+		property string h2: "x-large"
+		property int unitWidth: units.gu(4.5)
 	}
 	Settings {
 		id: usageSettings
 		category: "Usage"
 		property bool showStdOut: true
 		property bool showStdErr: true
-		property bool isProcDisplay: false
+		property bool isProcDisplay: true
 		property string iconFolder: picturesLocation
+		property string shell: "/bin/bash"
+		property string shellArg: "-c"
 	}
 
 	property string colorZ0: windowSettings.useDarkTheme ?
-								 "#0f0f0f" : UbuntuColors.porcelain
+					 "#0f0f0f" : UbuntuColors.porcelain
 	property string colorZ1: windowSettings.useDarkTheme ?
-								 "white" : "black"
+					 "white" : "black"
 	readonly property string colorScriptor: "#4747ff"
 	readonly property string colorScriptorPressed: "#ff0000"
 
@@ -148,9 +154,15 @@ MainView {
 
 	function firstCheckInitialize() {
 		if (windowSettings.lastRunVersion < applicationVersion) {
-			if (!utils.fileExists(binBusybox))
+			if (utils.fileExists(binBusybox)) {
+				usageSettings.shell = binBusybox;
+				usageSettings.shellArg = "sh -c"
+			} else {
 				PopupUtils.open(autoDlComponent);
-			firstRunHelper();
+			}
+			/* Last changed in version 1 */
+			if (windowSettings.lastRunVersion < 1)
+				firstRunHelper();
 			windowSettings.lastRunVersion = applicationVersion;
 		}
 	}

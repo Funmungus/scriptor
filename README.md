@@ -21,6 +21,11 @@ Required command line tools to build with helper scripts:
 click, click-buddy, sed, grep, dpkg
 adb is required for the install script.
 
+Before the first build, click chroots are needed for each target.  Use
+make_chroots.sh to make valid targets for building.  The click chroots
+are made with no names.  check_chroots.sh prints whether required chroots are
+created, and update_chroots.sh updates all three of the required chroots.
+
 To build a confined package, execute build_multi.sh from the source directory.
 To build an unconfined package, execute openstore.sh.
 
