@@ -44,7 +44,15 @@ Utils::~Utils()
 
 QString Utils::env(const QString &name)
 {
-	return getenv(name.toStdString().c_str());
+	std::string local = name.toStdString();
+	return getenv(local.c_str());
+}
+
+void Utils::setenv(const QString &name, const QString &value)
+{
+	std::string localName = name.toStdString(),
+			localValue = value.toStdString();
+	setenv(localName.c_str(), localValue.c_str());
 }
 
 QString Utils::dataDir()

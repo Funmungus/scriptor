@@ -28,6 +28,7 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
+import "Utils.js" as Utils
 
 Page {
 	id: root
@@ -337,6 +338,24 @@ Page {
 				onClicked: {
 					PopupUtils.open(downloaderComponent);
 					settingsFinished();
+				}
+			}
+			ScriptorButton {
+				anchors {
+					left: parent.left
+					right: parent.right
+					margins: margins
+				}
+				text: i18n.tr("Install busybox tool links")
+				onClicked: {
+					if (Utils.detectBusybox())
+						Utils.showMessage(this,
+								  i18n.tr("Busybox tools installed to: ") +
+								  utils.dataDir() + "/bin");
+					else
+						Utils.showMessage(this,
+								  i18n.tr("Error file does not exist: ") +
+								  binBusybox);
 				}
 			}
 		}

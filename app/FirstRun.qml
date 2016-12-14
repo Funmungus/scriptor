@@ -71,8 +71,7 @@ Popover {
 				width: column.width
 				text: i18n.tr("If this was installed from the Ubuntu store, it is suggested to download Busybox in the next dialogue.  " +
 							  "At any time the download dialogue can be opened from the settings page to install or update Busybox.  " +
-							  "It will be installed to the confined bin directory, explained below.  " +
-							  "To use it, start any command with `busybox`.\n\n" +
+							  "It will be installed to the confined bin directory, explained below.\n\n" +
 							  "Here are some hints to get started:\n\n") +
 					  utils.dataDir() + " - " +
 					  i18n.tr("The starting working directory of commands.\n\n") +

@@ -36,7 +36,7 @@ class Process : public QProcess
 	/*! \brief Executable context of process */
 	Q_PROPERTY(QString shell READ shell WRITE setShell NOTIFY shellChanged)
 	/*! \brief Executable argument for command to run in context.
-	 * "-c" for bash and busybox sh */
+	 * "-c" for bash, "sh -c" for busybox */
 	Q_PROPERTY(QString shellArg READ shellArg WRITE setShellArg NOTIFY shellArgChanged)
 public:
 	explicit Process(QObject *parent = 0);

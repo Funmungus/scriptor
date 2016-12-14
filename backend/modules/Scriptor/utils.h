@@ -39,6 +39,8 @@ public:
 	~Utils();
 
 	Q_INVOKABLE static QString env(const QString &name);
+	Q_INVOKABLE static void setenv(const QString &name, const QString &value);
+
 	Q_INVOKABLE static QString dataDir();
 	Q_INVOKABLE static bool fileExists(const QString &filePath);
 	Q_INVOKABLE static bool copyFile(const QString &copyFrom, const QString &copyTo);

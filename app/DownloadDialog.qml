@@ -30,13 +30,14 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 import Ubuntu.DownloadManager 0.1
 import Scriptor 1.0
+import "Utils.js" as Utils
 
 Dialog {
 	id: dialogue
 	title: i18n.tr("Download File")
 	text: i18n.tr("Download Binary: Download and copy to bin folder ") +
 		  utils.dataDir() + "/bin\n\n" +
-		  i18n.tr("Download: Only download to ") + Utils.dataDir + "/bin/";
+		  i18n.tr("Download: Only download to download manager");
 	readonly property var busyboxArchMap: {
 		'armhf': 'armv7l',
 		'i386': 'i686',
@@ -72,6 +73,7 @@ Dialog {
 				if (copyBin) {
 					var file;
 					var i = path.lastIndexOf("/");
+					var isBusybox = false;
 					if (i >= 0)
 						file = path.substring(i + 1, path.length);
 					else
@@ -84,8 +86,7 @@ Dialog {
 					}
 					if (file.substring(0, 7) === "busybox") {
 						/* Congratulations, you have a busybox! */
-						usageSettings.shell = binBusybox;
-						usageSettings.shellArg = "sh -c";
+						isBusybox = true;
 						toFile += "busybox";
 					} else {
 						/* Different binary, do not modify name */
@@ -94,7 +95,12 @@ Dialog {
 					if (utils.copyFile(path, toFile)) {
 						utils.setPermissions(toFile, utils.binPermissions());
 						txtStatus.text = i18n.tr("Download file and copy to bin directory complete!\n");
-						txtStatus.text += i18n.tr("Executable is available at ") + toFile + "\n";
+						txtStatus.text += i18n.tr("Executable installed to ") + toFile + "\n";
+						if (isBusybox) {
+							Utils.installBusybox()
+							txtStatus.text += i18n.tr("Busybox executables are installed to ") +
+									utils.dataDir() + "/bin" + "\n";
+						}
 					} else {
 						txtStatus.text = i18n.tr("Unable to copy file ") + path +
 								i18n.tr(" to ") + toFile + "\n";

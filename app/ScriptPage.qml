@@ -32,7 +32,7 @@ import QtQuick.LocalStorage 2.0
 
 import Scriptor 1.0
 import "storage.js" as Storage
-import "popups.js" as Pops
+import "Utils.js" as Utils
 
 Page {
 	id: root

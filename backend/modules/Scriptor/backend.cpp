@@ -43,8 +43,10 @@ void BackendPlugin::registerTypes(const char *uri)
 	QString binDir = Utils::dataDir() + "/bin";
 	QDir dirBinDir(binDir);
 	std::string strPath;
+
 	if (!dirBinDir.exists() && !dirBinDir.mkpath("."))
 		qCritical() << "Not able to create directory " << binDir;
+	/* Prepend our bin dir to make sure it is resolved before system */
 	if (path.isEmpty() || path.isNull())
 		path = binDir;
 	else

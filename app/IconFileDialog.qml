@@ -28,10 +28,10 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
-import "popups.js" as Pops
+import "Utils.js" as Utils
 
 Dialog {
 	function iconFile(acceptFnc) {
-		Pops.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
+		Utils.showMessage(null, i18n.tr("Icon dialog not yet implemented."));
 	}
 }

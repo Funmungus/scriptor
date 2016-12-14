@@ -30,3 +30,28 @@
 function showMessage(caller, text) {
 	return PopupUtils.open(Qt.resolvedUrl("Message.qml"), caller, {'text': text});
 }
+
+function installBusybox() {
+	/* Set shell arguments */
+	usageSettings.shell = binBusybox;
+	usageSettings.shellArg = "sh -c";
+	/* Execute busybox to install busybox links */
+	var localProc = Qt.createQmlObject(
+"import Scriptor 1.0; Process{shell: usageSettings.shell; shellArg: usageSettings.shellArg;}",
+				mainView);
+	localProc.start(binBusybox + " --install -s " + utils.dataDir() + "/bin/");
+	localProc.waitForFinished();
+	var localErrs = localProc.readAllStandardError();
+	if (localErrs && localErrs !== "")
+		console.error("Install busybox errors:\n" + localErrs);
+	localProc.destroy();
+	/* Our bin dir is prepended, so no need to change PATH */
+}
+
+function detectBusybox() {
+	if (utils.fileExists(binBusybox)) {
+		installBusybox();
+		return true;
+	}
+	return false;
+}

@@ -30,14 +30,14 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 import Qt.labs.settings 1.0
 import Scriptor 1.0
-import "popups.js" as Pops
+import "Utils.js" as Utils
 
 MainView {
 	objectName: "mainView"
 	applicationName: "scriptor.newparadigmsoftware"
 
 	readonly property string binBusybox: utils.dataDir() + "/bin/busybox";
-	readonly property int applicationVersion: 2
+	readonly property int applicationVersion: 3
 
 	id: mainView
 	width: windowSettings.width
@@ -154,12 +154,8 @@ MainView {
 
 	function firstCheckInitialize() {
 		if (windowSettings.lastRunVersion < applicationVersion) {
-			if (utils.fileExists(binBusybox)) {
-				usageSettings.shell = binBusybox;
-				usageSettings.shellArg = "sh -c"
-			} else {
+			if (!Utils.detectBusybox())
 				PopupUtils.open(autoDlComponent);
-			}
 			/* Last changed in version 1 */
 			if (windowSettings.lastRunVersion < 1)
 				firstRunHelper();
@@ -173,6 +169,7 @@ MainView {
 			contentHeight: mainView.height - units.gu(10)
 		}
 	}
+
 	function firstRunHelper() {
 		PopupUtils.open(firstRunComponent, scriptPage, {});
 	}

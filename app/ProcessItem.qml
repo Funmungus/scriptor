@@ -29,7 +29,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 import Scriptor 1.0
-import "popups.js" as Pops
+import "Utils.js" as Utils
 
 Item {
 	property alias procBuffer: procBuffer
@@ -45,7 +45,7 @@ Item {
 	signal showProcBuffer(var procBuffer)
 	ProcessBuffer {
 		id: procBuffer
-		onError: Pops.showMessage(btnStart, error);
+		onError: Utils.showMessage(btnStart, error);
 		/* Should this be the data or cache directory? */
 		Component.onCompleted: procBuffer.setWorkingDirectory(utils.dataDir())
 	}
