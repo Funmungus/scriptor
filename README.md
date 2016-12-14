@@ -1,5 +1,6 @@
-# Scriptor
+<center>![Scriptor slime - gooey](app/graphics/Scriptor.png)</center>
 
+# Scriptor
 Save a list of scripts and executables, and execute with a tap.
 
 ## Source and downloads
