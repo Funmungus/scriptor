@@ -142,14 +142,17 @@ Page {
 					text: i18n.tr("Show Standard Error")
 				}
 			}
-			LabelForm {
-				id: txtArea
+			ScrollView {
 				anchors {
 					top: errOption.bottom
 					left: rectArea.left
 					bottom: rectArea.bottom
 					right: rectArea.right
 					margins: units.gu(2)
+				}
+				LabelForm {
+					id: txtArea
+					width: parent.width
 				}
 			}
 
